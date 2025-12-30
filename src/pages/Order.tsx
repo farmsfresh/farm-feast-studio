@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { ShoppingCart, Plus, Minus, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useCart } from "@/contexts/CartContext";
 
 interface Category {
   id: string;
@@ -24,8 +26,9 @@ const Order = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("");
-  const [cart, setCart] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
+  const { cart, addToCart, removeFromCart, cartTotal, cartCount } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -62,29 +65,6 @@ const Order = () => {
 
   const activeItems = menuItems.filter((item) => item.category_id === activeCategory);
   const activeCategoryName = categories.find((c) => c.id === activeCategory)?.name || "";
-
-  const addToCart = (id: string) => {
-    setCart((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
-  };
-
-  const removeFromCart = (id: string) => {
-    setCart((prev) => {
-      const newCart = { ...prev };
-      if (newCart[id] > 1) {
-        newCart[id]--;
-      } else {
-        delete newCart[id];
-      }
-      return newCart;
-    });
-  };
-
-  const cartTotal = Object.entries(cart).reduce((total, [id, qty]) => {
-    const item = menuItems.find((i) => i.id === id);
-    return total + (item?.price || 0) * qty;
-  }, 0);
-
-  const cartCount = Object.values(cart).reduce((sum, qty) => sum + qty, 0);
 
   return (
     <Layout>
@@ -237,7 +217,12 @@ const Order = () => {
           animate={{ y: 0, opacity: 1 }}
           className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
         >
-          <Button variant="gold" size="lg" className="gap-3 shadow-lg">
+          <Button 
+            variant="gold" 
+            size="lg" 
+            className="gap-3 shadow-lg"
+            onClick={() => navigate("/cart")}
+          >
             <ShoppingCart className="w-5 h-5" />
             <span className="font-medium">View Cart ({cartCount})</span>
             <span className="px-3 py-1 bg-forest-dark/20 rounded-full text-sm">
