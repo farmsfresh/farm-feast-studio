@@ -1,9 +1,13 @@
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Users, Calendar, Award, ChefHat } from "lucide-react";
-import heroVideo from "@/assets/hero-video.mp4";
+import heroVideo1 from "@/assets/hero-video-1.mp4";
+import heroVideo2 from "@/assets/hero-video-2.mp4";
+import heroVideo3 from "@/assets/hero-video-3.mp4";
+
+const videos = [heroVideo1, heroVideo2, heroVideo3];
 
 const metrics = [
   { icon: Users, value: "50,000+", label: "Customers Served" },
@@ -15,32 +19,62 @@ const metrics = [
 export const HeroSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play().catch(() => {});
     }
-  }, []);
+  }, [currentVideoIndex]);
+
+  const handleVideoEnd = () => {
+    setCurrentVideoIndex((prev) => (prev + 1) % videos.length);
+    setIsLoaded(false);
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
-        <video
-          ref={videoRef}
-          autoPlay
-          loop
-          muted
-          playsInline
-          onLoadedData={() => setIsLoaded(true)}
-          className={`w-full h-full object-cover transition-opacity duration-1000 ${
-            isLoaded ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          <source src={heroVideo} type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-overlay" />
-        <div className="absolute inset-0 bg-forest/40" />
+        <AnimatePresence mode="wait">
+          <motion.video
+            key={currentVideoIndex}
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            onLoadedData={() => setIsLoaded(true)}
+            onEnded={handleVideoEnd}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isLoaded ? 1 : 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            className="w-full h-full object-cover"
+          >
+            <source src={videos[currentVideoIndex]} type="video/mp4" />
+          </motion.video>
+        </AnimatePresence>
+        {/* Clean dark overlay - no green/retro */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+      </div>
+
+      {/* Video Indicators */}
+      <div className="absolute bottom-24 left-1/2 -translate-x-1/2 z-20 flex gap-2">
+        {videos.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => {
+              setCurrentVideoIndex(index);
+              setIsLoaded(false);
+            }}
+            className={`w-2 h-2 rounded-full transition-all duration-300 ${
+              currentVideoIndex === index
+                ? "bg-gold w-8"
+                : "bg-white/40 hover:bg-white/60"
+            }`}
+            aria-label={`Video ${index + 1}`}
+          />
+        ))}
       </div>
 
       {/* Content */}
@@ -51,7 +85,7 @@ export const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <span className="inline-block px-4 py-2 rounded-full bg-gold/20 text-gold text-sm font-medium tracking-wide mb-6 backdrop-blur-sm border border-gold/30">
+            <span className="inline-block px-4 py-2 rounded-full bg-white/10 text-white text-sm font-medium tracking-wide mb-6 backdrop-blur-sm border border-white/20">
               Farm-to-Table Excellence
             </span>
           </motion.div>
@@ -60,7 +94,7 @@ export const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-cream leading-tight mb-6"
+            className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6"
           >
             Crafting Culinary
             <span className="block text-gold">Experiences</span>
@@ -70,7 +104,7 @@ export const HeroSection = () => {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-cream/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
+            className="text-white/80 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed"
           >
             From intimate gatherings to grand celebrations, we bring farm-fresh 
             ingredients and artisan expertise to create unforgettable moments.
@@ -109,13 +143,13 @@ export const HeroSection = () => {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 1.2 + index * 0.1 }}
-              className="text-center p-6 rounded-xl bg-cream/5 backdrop-blur-sm border border-cream/10 hover:bg-cream/10 transition-all duration-300"
+              className="text-center p-6 rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 hover:bg-white/10 transition-all duration-300"
             >
               <metric.icon className="w-8 h-8 text-gold mx-auto mb-3" />
-              <div className="font-serif text-2xl md:text-3xl font-bold text-cream mb-1">
+              <div className="font-serif text-2xl md:text-3xl font-bold text-white mb-1">
                 {metric.value}
               </div>
-              <div className="text-cream/60 text-sm">{metric.label}</div>
+              <div className="text-white/60 text-sm">{metric.label}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -128,7 +162,7 @@ export const HeroSection = () => {
         transition={{ delay: 1.5 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
-        <div className="w-6 h-10 rounded-full border-2 border-cream/30 flex items-start justify-center p-2">
+        <div className="w-6 h-10 rounded-full border-2 border-white/30 flex items-start justify-center p-2">
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
