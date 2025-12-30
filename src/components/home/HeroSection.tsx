@@ -79,7 +79,7 @@ export const HeroSection = () => {
           delay: 0.2
         }}>
             <span className="inline-block px-4 py-2 rounded-full bg-white/10 text-white text-sm font-medium tracking-wide mb-6 backdrop-blur-sm border border-white/20">
-              Farm-to-Table Excellence
+              Farms to Table Excellence
             </span>
           </motion.div>
 

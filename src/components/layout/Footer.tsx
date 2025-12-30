@@ -1,36 +1,71 @@
 import { Link } from "react-router-dom";
-import { Leaf, Phone, Mail, MapPin, Instagram, Facebook, Twitter } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Facebook, Linkedin } from "lucide-react";
+import logo from "@/assets/logo.png";
+
+// YouTube icon component
+const Youtube = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+  </svg>
+);
+
+// Instagram icon component
+const Instagram = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+  </svg>
+);
+
+// Threads icon component
+const Threads = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.96-.065-1.182.408-2.256 1.332-3.023.88-.73 2.132-1.13 3.527-1.122.984.005 1.902.14 2.751.402.02-.466.01-.934-.027-1.4-.158-2.036-1.035-3.058-2.681-3.126-1.12-.037-2.09.283-2.73.9l-.336.354-1.333-1.49.39-.376c1.026-.99 2.482-1.51 4.09-1.46 2.958.12 4.676 1.905 4.907 5.093.042.581.046 1.178.014 1.785.86.442 1.601 1.012 2.19 1.695.863 1 1.478 2.333 1.478 4.02 0 3.25-2.058 5.97-5.94 7.014C16.29 23.725 14.307 24 12.186 24zm.512-8.963c-1.054-.016-1.946.176-2.583.543-.63.364-.951.865-.91 1.418.04.517.37.962.93 1.253.613.319 1.39.47 2.187.42 1.036-.058 1.86-.445 2.382-1.094.363-.452.588-1.018.694-1.668-.812-.27-1.702-.412-2.655-.423l-.045-.449z"/>
+  </svg>
+);
+
+const socialLinks = [
+  { icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+  { icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+  { icon: Youtube, href: "https://youtube.com", label: "YouTube" },
+  { icon: Linkedin, href: "https://linkedin.com", label: "LinkedIn" },
+  { icon: Threads, href: "https://threads.net", label: "Threads" },
+];
 
 export const Footer = () => {
   return (
     <footer className="bg-forest text-cream">
-      <div className="container mx-auto px-4 lg:px-8 py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand */}
+      <div className="container mx-auto px-4 lg:px-8 py-12 md:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+          {/* Brand with Large Logo */}
           <div className="lg:col-span-1">
-            <Link to="/" className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center">
-                <Leaf className="w-5 h-5 text-forest-dark" />
-              </div>
+            <Link to="/" className="flex flex-col items-start gap-4 mb-6">
+              <img 
+                src={logo} 
+                alt="Farms Fresh Food Catering" 
+                className="h-24 md:h-28 lg:h-32 w-auto"
+              />
               <div className="flex flex-col">
-                <span className="font-serif font-bold text-lg leading-tight text-cream">
-                  FARMS FRESH
+                <span className="font-serif font-bold text-lg md:text-xl leading-tight text-cream">
+                  FARMS FRESH FOOD
                 </span>
-                <span className="text-xs tracking-widest text-gold">FOOD</span>
+                <span className="text-xs tracking-widest text-gold">CATERING</span>
               </div>
             </Link>
             <p className="text-cream/70 text-sm leading-relaxed mb-6">
               Crafting extraordinary culinary experiences with farm-fresh ingredients 
-              and artisan techniques since 2010.
+              and artisan techniques.
             </p>
-            <div className="flex gap-3">
-              {[Instagram, Facebook, Twitter].map((Icon, i) => (
+            <div className="flex flex-wrap gap-3">
+              {socialLinks.map((social) => (
                 <a
-                  key={i}
-                  href="#"
+                  key={social.label}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center hover:bg-gold hover:text-forest-dark transition-all duration-300"
+                  aria-label={social.label}
                 >
-                  <Icon className="w-4 h-4" />
+                  <social.icon className="w-4 h-4" />
                 </a>
               ))}
             </div>
@@ -38,8 +73,8 @@ export const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-serif text-lg font-semibold mb-6 text-gold">Quick Links</h4>
-            <ul className="space-y-3">
+            <h4 className="font-serif text-lg font-semibold mb-4 md:mb-6 text-gold">Quick Links</h4>
+            <ul className="space-y-2 md:space-y-3">
               {["Home", "About", "Services", "Order Online", "Get a Quote", "Contact Us"].map((item) => (
                 <li key={item}>
                   <Link
@@ -55,9 +90,9 @@ export const Footer = () => {
 
           {/* Services */}
           <div>
-            <h4 className="font-serif text-lg font-semibold mb-6 text-gold">Our Services</h4>
-            <ul className="space-y-3">
-              {["Event Planning", "Catering", "On-site Culinary", "Room Service", "Pop-up Events", "Micro Kitchens"].map((item) => (
+            <h4 className="font-serif text-lg font-semibold mb-4 md:mb-6 text-gold">Our Services</h4>
+            <ul className="space-y-2 md:space-y-3">
+              {["Event Planning", "Catering", "On-site Culinary", "Boxed Meals", "Pop-up Events", "Micro Kitchens"].map((item) => (
                 <li key={item}>
                   <span className="text-cream/70 text-sm">{item}</span>
                 </li>
@@ -67,40 +102,46 @@ export const Footer = () => {
 
           {/* Contact */}
           <div>
-            <h4 className="font-serif text-lg font-semibold mb-6 text-gold">Contact Us</h4>
-            <ul className="space-y-4">
+            <h4 className="font-serif text-lg font-semibold mb-4 md:mb-6 text-gold">Contact Us</h4>
+            <ul className="space-y-3 md:space-y-4">
               <li className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-gold shrink-0 mt-0.5" />
                 <span className="text-cream/70 text-sm">
-                  123 Gourmet Lane<br />
-                  Culinary District, CA 90210
+                  294 Industrial Way<br />
+                  Brisbane, CA 94005
                 </span>
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-gold shrink-0" />
-                <a href="tel:+18001234567" className="text-cream/70 hover:text-gold text-sm transition-colors">
-                  (800) 123-4567
+                <a href="tel:650-866-0520" className="text-cream/70 hover:text-gold text-sm transition-colors">
+                  650-866-0520
                 </a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-gold shrink-0" />
-                <a href="mailto:hello@farmsfresh.com" className="text-cream/70 hover:text-gold text-sm transition-colors">
-                  hello@farmsfresh.com
+                <a href="mailto:catering@farmsfreshfood.com" className="text-cream/70 hover:text-gold text-sm transition-colors break-all">
+                  catering@farmsfreshfood.com
                 </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Clock className="w-5 h-5 text-gold shrink-0" />
+                <span className="text-cream/70 text-sm">
+                  Mon - Sun: 8 AM - 8 PM
+                </span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="border-t border-cream/10 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-cream/50 text-sm">
-            © 2024 Farms Fresh Food. All rights reserved.
+        <div className="border-t border-cream/10 mt-10 md:mt-12 pt-6 md:pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-cream/50 text-xs md:text-sm text-center md:text-left">
+            © 2024 Farms Fresh Food Catering. All rights reserved.
           </p>
-          <div className="flex gap-6">
-            <a href="#" className="text-cream/50 hover:text-gold text-sm transition-colors">
+          <div className="flex gap-4 md:gap-6">
+            <a href="#" className="text-cream/50 hover:text-gold text-xs md:text-sm transition-colors">
               Privacy Policy
             </a>
-            <a href="#" className="text-cream/50 hover:text-gold text-sm transition-colors">
+            <a href="#" className="text-cream/50 hover:text-gold text-xs md:text-sm transition-colors">
               Terms of Service
             </a>
           </div>
