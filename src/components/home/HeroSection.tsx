@@ -92,8 +92,7 @@ export const HeroSection = () => {
         }} transition={{
           duration: 0.8,
           delay: 0.4
-        }} className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">Top notch event services
-Experience the best in class services and catering<span className="block text-gold">The best in class catering</span>
+        }} className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6">Top notch event services<span className="block text-gold">The best in class catering</span>
           </motion.h1>
 
           <motion.p initial={{
