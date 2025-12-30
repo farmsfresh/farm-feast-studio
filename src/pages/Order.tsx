@@ -17,6 +17,7 @@ interface MenuItem {
   description: string | null;
   price: number;
   category_id: string;
+  image_url: string | null;
 }
 
 const Order = () => {
@@ -158,51 +159,67 @@ const Order = () => {
                   activeItems.map((item) => (
                     <div
                       key={item.id}
-                      className="bg-card rounded-xl p-6 border border-border hover:border-gold/30 hover:shadow-elegant transition-all duration-300"
+                      className="bg-card rounded-xl overflow-hidden border border-border hover:border-gold/30 hover:shadow-elegant transition-all duration-300"
                     >
-                      <div className="flex justify-between items-start mb-4">
-                        <div className="flex-1">
-                          <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
-                            {item.name}
-                          </h3>
-                          <p className="text-muted-foreground text-sm leading-relaxed">
-                            {item.description}
-                          </p>
-                        </div>
-                        <span className="text-gold font-bold text-lg ml-4">
-                          ${Number(item.price).toFixed(2)}
-                        </span>
-                      </div>
-                      <div className="flex items-center justify-between pt-4 border-t border-border">
-                        {cart[item.id] ? (
-                          <div className="flex items-center gap-3">
-                            <button
-                              onClick={() => removeFromCart(item.id)}
-                              className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-destructive/10 transition-colors"
-                            >
-                              <Minus className="w-4 h-4" />
-                            </button>
-                            <span className="font-medium text-foreground w-6 text-center">
-                              {cart[item.id]}
-                            </span>
-                            <button
-                              onClick={() => addToCart(item.id)}
-                              className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center hover:bg-gold/30 transition-colors"
-                            >
-                              <Plus className="w-4 h-4 text-gold" />
-                            </button>
-                          </div>
+                      {/* Menu Item Image */}
+                      <div className="relative h-48 overflow-hidden">
+                        {item.image_url ? (
+                          <img
+                            src={item.image_url}
+                            alt={item.name}
+                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                          />
                         ) : (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => addToCart(item.id)}
-                            className="gap-2"
-                          >
-                            <Plus className="w-4 h-4" />
-                            Add to Cart
-                          </Button>
+                          <div className="w-full h-full bg-gradient-to-br from-gold/20 to-forest/20 flex items-center justify-center">
+                            <span className="text-muted-foreground text-sm">No image</span>
+                          </div>
                         )}
+                        <div className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full">
+                          <span className="text-gold font-bold text-lg">
+                            ${Number(item.price).toFixed(2)}
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {/* Menu Item Content */}
+                      <div className="p-5">
+                        <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+                          {item.name}
+                        </h3>
+                        <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
+                          {item.description}
+                        </p>
+                        <div className="flex items-center justify-between pt-4 border-t border-border">
+                          {cart[item.id] ? (
+                            <div className="flex items-center gap-3">
+                              <button
+                                onClick={() => removeFromCart(item.id)}
+                                className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-destructive/10 transition-colors"
+                              >
+                                <Minus className="w-4 h-4" />
+                              </button>
+                              <span className="font-medium text-foreground w-6 text-center">
+                                {cart[item.id]}
+                              </span>
+                              <button
+                                onClick={() => addToCart(item.id)}
+                                className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center hover:bg-gold/30 transition-colors"
+                              >
+                                <Plus className="w-4 h-4 text-gold" />
+                              </button>
+                            </div>
+                          ) : (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => addToCart(item.id)}
+                              className="gap-2 w-full"
+                            >
+                              <Plus className="w-4 h-4" />
+                              Add to Cart
+                            </Button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))
