@@ -66,7 +66,7 @@ export const HeroSection = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 lg:px-8 pt-24">
+      <div className="relative z-10 container mx-auto px-4 lg:px-8 pt-32 md:pt-40">
         <div className="max-w-4xl mx-auto text-center">
           <motion.div initial={{
           opacity: 0,
