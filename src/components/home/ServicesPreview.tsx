@@ -16,7 +16,7 @@ const services = [{
   description: "Expert chefs managing your kitchen operations with precision and creativity."
 }, {
   icon: BedDouble,
-  title: "Room Service",
+  title: "BOXED MEALS",
   description: "Premium in-room dining experiences for hotels and hospitality venues."
 }, {
   icon: Coffee,
