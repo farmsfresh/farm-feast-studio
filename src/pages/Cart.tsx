@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   Trash2, 
   Plus, 
@@ -18,7 +19,8 @@ import {
   Phone,
   Mail,
   MapPin,
-  Clock
+  Clock,
+  Lock
 } from "lucide-react";
 import { z } from "zod";
 
@@ -68,16 +70,37 @@ const Cart = () => {
     try {
       const validatedData = checkoutSchema.parse(formData);
       
-      // Simulate order submission
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      
-      toast({
-        title: "Order Placed Successfully!",
-        description: `Thank you, ${validatedData.name}! Your order for ${cartCount} item(s) totaling $${cartTotal.toFixed(2)} has been received. We'll contact you shortly to confirm.`,
+      // Prepare cart items for Stripe
+      const stripeCartItems = cartItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: Number(item.price),
+        quantity: item.quantity,
+        image_url: item.image_url,
+      }));
+
+      // Call edge function to create checkout session
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: {
+          cartItems: stripeCartItems,
+          customerInfo: validatedData,
+          successUrl: `${window.location.origin}/order?success=true`,
+          cancelUrl: `${window.location.origin}/cart?canceled=true`,
+        },
       });
-      
-      clearCart();
-      navigate("/order");
+
+      if (error) {
+        throw new Error(error.message || "Failed to create checkout session");
+      }
+
+      if (data?.url) {
+        // Clear cart before redirecting
+        clearCart();
+        // Redirect to Stripe Checkout
+        window.location.href = data.url;
+      } else {
+        throw new Error("No checkout URL returned");
+      }
     } catch (error) {
       if (error instanceof z.ZodError) {
         const fieldErrors: Partial<Record<keyof CheckoutFormData, string>> = {};
@@ -88,9 +111,10 @@ const Cart = () => {
         });
         setErrors(fieldErrors);
       } else {
+        const errorMessage = error instanceof Error ? error.message : "Something went wrong";
         toast({
-          title: "Error",
-          description: "Something went wrong. Please try again.",
+          title: "Checkout Error",
+          description: errorMessage,
           variant: "destructive",
         });
       }
@@ -417,11 +441,15 @@ const Cart = () => {
                       <>Processing...</>
                     ) : (
                       <>
-                        <CreditCard className="w-5 h-5" />
-                        Place Order
+                        <Lock className="w-4 h-4" />
+                        Pay with Stripe
                       </>
                     )}
                   </Button>
+                  <p className="text-xs text-muted-foreground text-center mt-2 flex items-center justify-center gap-1">
+                    <CreditCard className="w-3 h-3" />
+                    Secure payment powered by Stripe
+                  </p>
                 </form>
               </div>
             </div>
