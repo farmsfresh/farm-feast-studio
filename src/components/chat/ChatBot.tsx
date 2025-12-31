@@ -1,21 +1,30 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Loader2 } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, UtensilsCrossed, FileText, Phone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useNavigate } from "react-router-dom";
 
 type Message = { role: "user" | "assistant"; content: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/customer-chat`;
 
+const quickReplies = [
+  { label: "View Menu", icon: UtensilsCrossed, action: "navigate", path: "/order" },
+  { label: "Get a Quote", icon: FileText, action: "navigate", path: "/quote" },
+  { label: "Contact Us", icon: Phone, action: "navigate", path: "/contact" },
+];
+
 export const ChatBot = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     { role: "assistant", content: "Hi! Welcome to Layla's Kitchen. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showQuickReplies, setShowQuickReplies] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -24,10 +33,19 @@ export const ChatBot = () => {
     }
   }, [messages]);
 
-  const sendMessage = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleQuickReply = (reply: typeof quickReplies[0]) => {
+    if (reply.action === "navigate") {
+      setIsOpen(false);
+      navigate(reply.path);
+    }
+  };
 
-    const userMessage: Message = { role: "user", content: input.trim() };
+  const sendMessage = async (messageText?: string) => {
+    const text = messageText || input.trim();
+    if (!text || isLoading) return;
+
+    setShowQuickReplies(false);
+    const userMessage: Message = { role: "user", content: text };
     const newMessages = [...messages, userMessage];
     setMessages(newMessages);
     setInput("");
@@ -158,10 +176,43 @@ export const ChatBot = () => {
                     </div>
                   </div>
                 )}
+                
+                {showQuickReplies && messages.length === 1 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {quickReplies.map((reply) => (
+                      <Button
+                        key={reply.label}
+                        variant="outline"
+                        size="sm"
+                        className="gap-1.5 text-xs"
+                        onClick={() => handleQuickReply(reply)}
+                      >
+                        <reply.icon className="w-3.5 h-3.5" />
+                        {reply.label}
+                      </Button>
+                    ))}
+                  </div>
+                )}
               </div>
             </ScrollArea>
 
-            <div className="p-4 border-t border-border">
+            <div className="p-4 border-t border-border space-y-3">
+              {messages.length > 1 && (
+                <div className="flex flex-wrap gap-2">
+                  {quickReplies.map((reply) => (
+                    <Button
+                      key={reply.label}
+                      variant="ghost"
+                      size="sm"
+                      className="gap-1.5 text-xs h-7 px-2"
+                      onClick={() => handleQuickReply(reply)}
+                    >
+                      <reply.icon className="w-3 h-3" />
+                      {reply.label}
+                    </Button>
+                  ))}
+                </div>
+              )}
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
