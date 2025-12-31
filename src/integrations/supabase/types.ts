@@ -82,6 +82,66 @@ export type Database = {
           },
         ]
       }
+      orders: {
+        Row: {
+          created_at: string
+          currency: string | null
+          customer_email: string
+          customer_name: string | null
+          customer_phone: string | null
+          delivery_date: string | null
+          delivery_time: string | null
+          id: string
+          notes: string | null
+          order_items: Json
+          shipping_address: Json | null
+          status: string | null
+          stripe_payment_intent_id: string | null
+          stripe_session_id: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          customer_email: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          delivery_date?: string | null
+          delivery_time?: string | null
+          id?: string
+          notes?: string | null
+          order_items: Json
+          shipping_address?: Json | null
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id: string
+          subtotal: number
+          total: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          customer_email?: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          delivery_date?: string | null
+          delivery_time?: string | null
+          id?: string
+          notes?: string | null
+          order_items?: Json
+          shipping_address?: Json | null
+          status?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_session_id?: string
+          subtotal?: number
+          total?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
