@@ -32,7 +32,7 @@ export const ChatBot = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: "Hi! Welcome to Layla's Kitchen. How can I help you today?" }
+    { role: "assistant", content: "Hi! Welcome to FARMS FRESH FOOD. How can I help you today?" }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -157,7 +157,7 @@ export const ChatBot = () => {
                   <MessageCircle className="w-5 h-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-primary-foreground">Layla's Kitchen</h3>
+                  <h3 className="font-semibold text-primary-foreground">FARMS FRESH FOOD</h3>
                   <p className="text-xs text-primary-foreground/70">Customer Support</p>
                 </div>
               </div>
