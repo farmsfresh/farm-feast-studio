@@ -111,7 +111,7 @@ export const Navbar = () => {
           <Link to="/" className="flex items-center gap-3 group">
             <img src={logo} alt="Farms Fresh Food Catering" className="h-20 md:h-24 w-auto group-hover:scale-105 transition-transform duration-300" />
             <div className="hidden sm:block">
-              <h1 className={`font-serif text-base md:text-lg font-bold leading-tight ${isScrolled ? "text-foreground" : "text-cream"}`}>
+              <h1 className={`font-serif text-xl md:text-2xl font-bold leading-tight ${isScrolled ? "text-foreground" : "text-cream"}`}>
                 FARMS FRESH FOOD
               </h1>
               <span className={`text-[10px] md:text-xs tracking-widest ${isScrolled ? "text-gold" : "text-gold-light"}`}>CATERING</span>
