@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, X, Send, Loader2, UtensilsCrossed, FileText, Phone } from "lucide-react";
+import { MessageCircle, X, Send, Loader2, UtensilsCrossed, FileText, Phone, ChefHat, DollarSign, Clock, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -10,10 +10,22 @@ type Message = { role: "user" | "assistant"; content: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/customer-chat`;
 
-const quickReplies = [
+type QuickReply = {
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  action: "navigate" | "message";
+  path?: string;
+  message?: string;
+};
+
+const quickReplies: QuickReply[] = [
   { label: "View Menu", icon: UtensilsCrossed, action: "navigate", path: "/order" },
   { label: "Get a Quote", icon: FileText, action: "navigate", path: "/quote" },
   { label: "Contact Us", icon: Phone, action: "navigate", path: "/contact" },
+  { label: "Cuisines", icon: ChefHat, action: "message", message: "What cuisines do you offer?" },
+  { label: "Pricing", icon: DollarSign, action: "message", message: "What are your pricing options for catering?" },
+  { label: "Delivery", icon: Truck, action: "message", message: "Do you offer delivery? What are the options?" },
+  { label: "Lead Time", icon: Clock, action: "message", message: "How far in advance should I place an order?" },
 ];
 
 export const ChatBot = () => {
@@ -26,6 +38,7 @@ export const ChatBot = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const sendMessageRef = useRef<((text: string) => Promise<void>) | null>(null);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -33,10 +46,12 @@ export const ChatBot = () => {
     }
   }, [messages]);
 
-  const handleQuickReply = (reply: typeof quickReplies[0]) => {
-    if (reply.action === "navigate") {
+  const handleQuickReply = (reply: QuickReply) => {
+    if (reply.action === "navigate" && reply.path) {
       setIsOpen(false);
       navigate(reply.path);
+    } else if (reply.action === "message" && reply.message) {
+      sendMessageRef.current?.(reply.message);
     }
   };
 
@@ -120,6 +135,11 @@ export const ChatBot = () => {
       setIsLoading(false);
     }
   };
+
+  // Store ref to sendMessage for quick replies
+  useEffect(() => {
+    sendMessageRef.current = sendMessage;
+  });
 
   return (
     <>
