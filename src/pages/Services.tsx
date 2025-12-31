@@ -69,8 +69,16 @@ const Services = () => {
       </Helmet>
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-green-100">
-        <div className="container mx-auto px-4 lg:px-8">
+      <section className="pt-32 pb-16 bg-green-100 relative overflow-hidden">
+        {/* Subtle pattern overlay */}
+        <div 
+          className="absolute inset-0 opacity-[0.15]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--forest)) 1px, transparent 0)`,
+            backgroundSize: '24px 24px'
+          }}
+        />
+        <div className="container mx-auto px-4 lg:px-8 relative z-10">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
