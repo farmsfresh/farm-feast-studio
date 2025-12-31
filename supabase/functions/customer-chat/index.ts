@@ -29,7 +29,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are a friendly customer service assistant for Layla's Kitchen, a premium catering service. 
+            content: `You are a friendly customer service assistant for Farms Fresh Food, a premium catering service.
             
 Help customers with:
 - Menu questions and dietary accommodations
