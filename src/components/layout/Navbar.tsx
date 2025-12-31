@@ -35,6 +35,9 @@ const navItems = [{
   name: "Order Online",
   path: "/order"
 }, {
+  name: "Blog",
+  path: "/blog"
+}, {
   name: "Get a Quote",
   path: "/quote"
 }, {
