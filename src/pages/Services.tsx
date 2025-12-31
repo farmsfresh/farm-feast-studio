@@ -69,7 +69,7 @@ const Services = () => {
       </Helmet>
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-gradient-to-b from-forest to-forest-dark">
+      <section className="pt-32 pb-16 bg-green-100">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -77,13 +77,13 @@ const Services = () => {
             transition={{ duration: 0.6 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <span className="inline-block px-4 py-2 rounded-full bg-gold/20 text-gold text-sm font-medium tracking-wide mb-6">
+            <span className="inline-block px-4 py-2 rounded-full bg-forest/20 text-forest text-sm font-medium tracking-wide mb-6">
               Our Expertise
             </span>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-cream mb-6">
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-forest-dark mb-6">
               Services That <span className="text-gold">Inspire</span>
             </h1>
-            <p className="text-cream/70 text-base md:text-lg leading-relaxed px-4">
+            <p className="text-forest/80 text-base md:text-lg leading-relaxed px-4">
               From intimate gatherings to grand corporate events, our comprehensive 
               services are designed to exceed your expectations at every touchpoint.
             </p>
