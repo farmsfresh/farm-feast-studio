@@ -109,7 +109,7 @@ export const Navbar = () => {
         <div className="flex items-center justify-between">
           {/* Logo and Title - increased logo size by 1/3 (h-16 to h-20) */}
           <Link to="/" className="flex items-center gap-3 group">
-            <img src={logo} alt="Farms Fresh Food Catering" className="h-20 md:h-24 w-auto group-hover:scale-105 transition-transform duration-300" />
+            <img src={logo} alt="Farms Fresh Food Catering" className="h-24 md:h-28 w-auto group-hover:scale-105 transition-transform duration-300" />
             <div className="hidden sm:block">
               <h1 className={`font-serif text-xl md:text-2xl font-bold leading-tight ${isScrolled ? "text-foreground" : "text-cream"}`}>
                 FARMS FRESH FOOD
