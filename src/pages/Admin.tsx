@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { Link } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -32,6 +33,7 @@ import {
   Clock,
   XCircle,
   TruckIcon,
+  Users,
 } from "lucide-react";
 
 interface Order {
@@ -239,6 +241,14 @@ const Admin = () => {
             <p className="text-cream/70 text-lg">
               View and manage all orders in one place.
             </p>
+            <div className="mt-6">
+              <Link to="/admin/visitors">
+                <Button variant="outline" className="gap-2 border-gold/30 text-gold hover:bg-gold/10">
+                  <Users className="w-4 h-4" />
+                  View Visitor Analytics
+                </Button>
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
