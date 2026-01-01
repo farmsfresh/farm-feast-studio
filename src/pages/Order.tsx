@@ -6,13 +6,11 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, Plus, Minus, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
-
 interface Category {
   id: string;
   name: string;
   display_order: number;
 }
-
 interface MenuItem {
   id: string;
   name: string;
@@ -21,62 +19,60 @@ interface MenuItem {
   category_id: string;
   image_url: string | null;
 }
-
 const Order = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [activeCategory, setActiveCategory] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const { cart, addToCart, removeFromCart, cartTotal, cartCount } = useCart();
+  const {
+    cart,
+    addToCart,
+    removeFromCart,
+    cartTotal,
+    cartCount
+  } = useCart();
   const navigate = useNavigate();
-
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      
+
       // Fetch categories
-      const { data: categoriesData } = await supabase
-        .from("menu_categories")
-        .select("*")
-        .order("display_order");
-      
+      const {
+        data: categoriesData
+      } = await supabase.from("menu_categories").select("*").order("display_order");
+
       // Fetch menu items
-      const { data: itemsData } = await supabase
-        .from("menu_items")
-        .select("*")
-        .order("display_order");
-      
+      const {
+        data: itemsData
+      } = await supabase.from("menu_items").select("*").order("display_order");
       if (categoriesData) {
         setCategories(categoriesData);
         if (categoriesData.length > 0) {
           setActiveCategory(categoriesData[0].id);
         }
       }
-      
       if (itemsData) {
         setMenuItems(itemsData);
       }
-      
       setLoading(false);
     };
-
     fetchData();
   }, []);
-
-  const activeItems = menuItems.filter((item) => item.category_id === activeCategory);
-  const activeCategoryName = categories.find((c) => c.id === activeCategory)?.name || "";
-
-  return (
-    <Layout>
+  const activeItems = menuItems.filter(item => item.category_id === activeCategory);
+  const activeCategoryName = categories.find(c => c.id === activeCategory)?.name || "";
+  return <Layout>
       {/* Hero */}
       <section className="pt-32 pb-12 bg-gradient-to-b from-forest to-forest-dark">
         <div className="container mx-auto px-4 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="max-w-3xl mx-auto text-center"
-          >
+          <motion.div initial={{
+          opacity: 0,
+          y: 30
+        }} animate={{
+          opacity: 1,
+          y: 0
+        }} transition={{
+          duration: 0.6
+        }} className="max-w-3xl mx-auto text-center">
             <span className="inline-block px-4 py-2 rounded-full bg-gold/20 text-gold text-sm font-medium tracking-wide mb-6">
               Fresh & Delicious
             </span>
@@ -93,67 +89,41 @@ const Order = () => {
       {/* Menu */}
       <section className="py-12 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
+          {loading ? <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-gold" />
-            </div>
-          ) : (
-            <>
+            </div> : <>
               {/* Categories */}
               <div className="mb-10 overflow-x-auto pb-4">
-                <div className="flex gap-2 min-w-max">
-                  {categories.map((category) => (
-                    <button
-                      key={category.id}
-                      onClick={() => setActiveCategory(category.id)}
-                      className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
-                        activeCategory === category.id
-                          ? "bg-gold text-forest-dark"
-                          : "bg-secondary text-foreground hover:bg-gold/20"
-                      }`}
-                    >
+                <div className="flex gap-2 min-w-max text-[#73edc0]">
+                  {categories.map(category => <button key={category.id} onClick={() => setActiveCategory(category.id)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${activeCategory === category.id ? "bg-gold text-forest-dark" : "bg-secondary text-foreground hover:bg-gold/20"}`}>
                       {category.name}
-                    </button>
-                  ))}
+                    </button>)}
                 </div>
               </div>
 
               {/* Menu Items */}
-              <motion.div
-                key={activeCategory}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-              >
-                {activeItems.length === 0 ? (
-                  <div className="col-span-full text-center py-12">
+              <motion.div key={activeCategory} initial={{
+            opacity: 0,
+            y: 20
+          }} animate={{
+            opacity: 1,
+            y: 0
+          }} transition={{
+            duration: 0.4
+          }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {activeItems.length === 0 ? <div className="col-span-full text-center py-12">
                     <p className="text-muted-foreground text-lg">
                       No items available in {activeCategoryName} yet.
                     </p>
                     <p className="text-muted-foreground/70 text-sm mt-2">
                       Check back soon for delicious options!
                     </p>
-                  </div>
-                ) : (
-                  activeItems.map((item) => (
-                    <div
-                      key={item.id}
-                      className="bg-card rounded-xl overflow-hidden border border-border hover:border-gold/30 hover:shadow-elegant transition-all duration-300"
-                    >
+                  </div> : activeItems.map(item => <div key={item.id} className="bg-card rounded-xl overflow-hidden border border-border hover:border-gold/30 hover:shadow-elegant transition-all duration-300">
                       {/* Menu Item Image */}
                       <div className="relative h-48 overflow-hidden">
-                        {item.image_url ? (
-                          <img
-                            src={item.image_url}
-                            alt={item.name}
-                            className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-                          />
-                        ) : (
-                          <div className="w-full h-full bg-gradient-to-br from-gold/20 to-forest/20 flex items-center justify-center">
+                        {item.image_url ? <img src={item.image_url} alt={item.name} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" /> : <div className="w-full h-full bg-gradient-to-br from-gold/20 to-forest/20 flex items-center justify-center">
                             <span className="text-muted-foreground text-sm">No image</span>
-                          </div>
-                        )}
+                          </div>}
                         <div className="absolute top-3 right-3 bg-background/90 backdrop-blur-sm px-3 py-1 rounded-full">
                           <span className="text-gold font-bold text-lg">
                             ${Number(item.price).toFixed(2)}
@@ -170,69 +140,44 @@ const Order = () => {
                           {item.description}
                         </p>
                         <div className="flex items-center justify-between pt-4 border-t border-border">
-                          {cart[item.id] ? (
-                            <div className="flex items-center gap-3">
-                              <button
-                                onClick={() => removeFromCart(item.id)}
-                                className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-destructive/10 transition-colors"
-                              >
+                          {cart[item.id] ? <div className="flex items-center gap-3">
+                              <button onClick={() => removeFromCart(item.id)} className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center hover:bg-destructive/10 transition-colors">
                                 <Minus className="w-4 h-4" />
                               </button>
                               <span className="font-medium text-foreground w-6 text-center">
                                 {cart[item.id]}
                               </span>
-                              <button
-                                onClick={() => addToCart(item.id)}
-                                className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center hover:bg-gold/30 transition-colors"
-                              >
+                              <button onClick={() => addToCart(item.id)} className="w-8 h-8 rounded-full bg-gold/20 flex items-center justify-center hover:bg-gold/30 transition-colors">
                                 <Plus className="w-4 h-4 text-gold" />
                               </button>
-                            </div>
-                          ) : (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => addToCart(item.id)}
-                              className="gap-2 w-full"
-                            >
+                            </div> : <Button variant="outline" size="sm" onClick={() => addToCart(item.id)} className="gap-2 w-full">
                               <Plus className="w-4 h-4" />
                               Add to Cart
-                            </Button>
-                          )}
+                            </Button>}
                         </div>
                       </div>
-                    </div>
-                  ))
-                )}
+                    </div>)}
               </motion.div>
-            </>
-          )}
+            </>}
         </div>
       </section>
 
       {/* Floating Cart */}
-      {cartCount > 0 && (
-        <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50"
-        >
-          <Button 
-            variant="gold" 
-            size="lg" 
-            className="gap-3 shadow-lg"
-            onClick={() => navigate("/cart")}
-          >
+      {cartCount > 0 && <motion.div initial={{
+      y: 100,
+      opacity: 0
+    }} animate={{
+      y: 0,
+      opacity: 1
+    }} className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50">
+          <Button variant="gold" size="lg" className="gap-3 shadow-lg" onClick={() => navigate("/cart")}>
             <ShoppingCart className="w-5 h-5" />
             <span className="font-medium">View Cart ({cartCount})</span>
             <span className="px-3 py-1 bg-forest-dark/20 rounded-full text-sm">
               ${cartTotal.toFixed(2)}
             </span>
           </Button>
-        </motion.div>
-      )}
-    </Layout>
-  );
+        </motion.div>}
+    </Layout>;
 };
-
 export default Order;
