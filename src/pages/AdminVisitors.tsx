@@ -26,6 +26,7 @@ import {
   MapPin,
   Clock,
   ArrowLeft,
+  Download,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -151,6 +152,40 @@ const AdminVisitors = () => {
     acc[page] = (acc[page] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
+
+  const exportToCSV = () => {
+    const headers = ["IP Address", "Country", "City", "Page", "Device", "Browser", "Referrer", "Time"];
+    const rows = filteredVisitors.map(visitor => [
+      visitor.ip_address || "Unknown",
+      visitor.country || "",
+      visitor.city || "",
+      visitor.page_path || "/",
+      getDeviceType(visitor.user_agent),
+      getBrowser(visitor.user_agent),
+      visitor.referrer || "Direct",
+      new Date(visitor.created_at).toISOString(),
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(","))
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `visitor-logs-${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Export Complete",
+      description: `Exported ${filteredVisitors.length} visitor records to CSV`,
+    });
+  };
 
   if (loading) {
     return (
@@ -307,6 +342,10 @@ const AdminVisitors = () => {
             <Button variant="outline" onClick={fetchVisitors} className="gap-2">
               <RefreshCw className="w-4 h-4" />
               Refresh
+            </Button>
+            <Button variant="outline" onClick={exportToCSV} className="gap-2">
+              <Download className="w-4 h-4" />
+              Export CSV
             </Button>
           </div>
 
