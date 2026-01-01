@@ -5,6 +5,44 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
+interface GeoLocation {
+  country: string | null;
+  city: string | null;
+}
+
+async function getGeoLocation(ip: string): Promise<GeoLocation> {
+  // Skip geolocation for local/private IPs
+  if (ip === "unknown" || ip.startsWith("192.168.") || ip.startsWith("10.") || ip === "127.0.0.1" || ip === "::1") {
+    return { country: null, city: null };
+  }
+
+  try {
+    // Using ip-api.com (free, no API key required, 45 requests/minute limit)
+    const response = await fetch(`http://ip-api.com/json/${ip}?fields=status,country,city`);
+    
+    if (!response.ok) {
+      console.log(`Geolocation API returned status: ${response.status}`);
+      return { country: null, city: null };
+    }
+
+    const data = await response.json();
+    
+    if (data.status === "success") {
+      console.log(`Geolocation found: ${data.city}, ${data.country}`);
+      return {
+        country: data.country || null,
+        city: data.city || null,
+      };
+    }
+    
+    console.log(`Geolocation lookup failed for IP ${ip}: ${data.message || "Unknown error"}`);
+    return { country: null, city: null };
+  } catch (error) {
+    console.error("Geolocation lookup error:", error);
+    return { country: null, city: null };
+  }
+}
+
 Deno.serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
@@ -34,14 +72,18 @@ Deno.serve(async (req) => {
       }
     }
 
-    console.log(`Logging visitor: IP=${ip}, Page=${pagePath}, UA=${userAgent.substring(0, 50)}...`);
+    console.log(`Logging visitor: IP=${ip}, Page=${pagePath}`);
+
+    // Get geolocation data
+    const geoData = await getGeoLocation(ip);
+    console.log(`Geolocation result: ${geoData.city || "N/A"}, ${geoData.country || "N/A"}`);
 
     // Initialize Supabase client with service role
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Insert visitor log
+    // Insert visitor log with geolocation
     const { data, error } = await supabase
       .from("visitor_logs")
       .insert({
@@ -49,6 +91,8 @@ Deno.serve(async (req) => {
         user_agent: userAgent,
         page_path: pagePath,
         referrer: referrer,
+        country: geoData.country,
+        city: geoData.city,
       })
       .select()
       .single();
@@ -67,7 +111,7 @@ Deno.serve(async (req) => {
     console.log(`Visitor logged successfully: ${data.id}`);
 
     return new Response(
-      JSON.stringify({ success: true, ip: ip }),
+      JSON.stringify({ success: true, ip: ip, location: geoData }),
       { 
         status: 200, 
         headers: { ...corsHeaders, "Content-Type": "application/json" } 
