@@ -5,3 +5,9 @@ verify_jwt = false
 
 [functions.stripe-webhook]
 verify_jwt = false
+
+[functions.log-visitor]
+verify_jwt = false
+
+[functions.customer-chat]
+verify_jwt = false
