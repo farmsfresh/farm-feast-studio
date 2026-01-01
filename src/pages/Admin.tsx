@@ -241,11 +241,17 @@ const Admin = () => {
             <p className="text-cream/70 text-lg">
               View and manage all orders in one place.
             </p>
-            <div className="mt-6">
+            <div className="mt-6 flex flex-wrap gap-3 justify-center">
               <Link to="/admin/visitors">
                 <Button variant="outline" className="gap-2 border-gold/30 text-gold hover:bg-gold/10">
                   <Users className="w-4 h-4" />
-                  View Visitor Analytics
+                  Visitor Analytics
+                </Button>
+              </Link>
+              <Link to="/admin/modifiers">
+                <Button variant="outline" className="gap-2 border-gold/30 text-gold hover:bg-gold/10">
+                  <Package className="w-4 h-4" />
+                  Manage Modifiers
                 </Button>
               </Link>
             </div>
