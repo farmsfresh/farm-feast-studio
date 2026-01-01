@@ -77,6 +77,51 @@ export type Database = {
         }
         Relationships: []
       }
+      menu_item_modifiers: {
+        Row: {
+          created_at: string
+          id: string
+          is_required: boolean | null
+          max_selections: number | null
+          menu_item_id: string
+          min_selections: number | null
+          modifier_category_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_required?: boolean | null
+          max_selections?: number | null
+          menu_item_id: string
+          min_selections?: number | null
+          modifier_category_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_required?: boolean | null
+          max_selections?: number | null
+          menu_item_id?: string
+          min_selections?: number | null
+          modifier_category_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "menu_item_modifiers_menu_item_id_fkey"
+            columns: ["menu_item_id"]
+            isOneToOne: false
+            referencedRelation: "menu_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "menu_item_modifiers_modifier_category_id_fkey"
+            columns: ["modifier_category_id"]
+            isOneToOne: false
+            referencedRelation: "modifier_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       menu_items: {
         Row: {
           category_id: string
