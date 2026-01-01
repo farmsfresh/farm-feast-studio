@@ -124,6 +124,85 @@ export type Database = {
           },
         ]
       }
+      modifier_categories: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_required: boolean | null
+          max_selections: number | null
+          menu_category_id: string | null
+          name: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_required?: boolean | null
+          max_selections?: number | null
+          menu_category_id?: string | null
+          name: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_required?: boolean | null
+          max_selections?: number | null
+          menu_category_id?: string | null
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "modifier_categories_menu_category_id_fkey"
+            columns: ["menu_category_id"]
+            isOneToOne: false
+            referencedRelation: "menu_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      modifiers: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_available: boolean | null
+          modifier_category_id: string
+          name: string
+          price: number
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_available?: boolean | null
+          modifier_category_id: string
+          name: string
+          price?: number
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_available?: boolean | null
+          modifier_category_id?: string
+          name?: string
+          price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "modifiers_modifier_category_id_fkey"
+            columns: ["modifier_category_id"]
+            isOneToOne: false
+            referencedRelation: "modifier_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       orders: {
         Row: {
           created_at: string
