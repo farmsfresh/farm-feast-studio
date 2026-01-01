@@ -35,6 +35,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Plus,
   Pencil,
@@ -46,6 +47,7 @@ import {
   ChevronRight,
   Settings2,
   DollarSign,
+  Link2,
 } from "lucide-react";
 
 interface ModifierCategory {
@@ -66,9 +68,26 @@ interface Modifier {
   display_order: number;
 }
 
+interface MenuItem {
+  id: string;
+  name: string;
+  category_name: string;
+}
+
+interface MenuItemModifier {
+  id: string;
+  menu_item_id: string;
+  modifier_category_id: string;
+  is_required: boolean | null;
+  min_selections: number | null;
+  max_selections: number | null;
+}
+
 const AdminModifiers = () => {
   const [categories, setCategories] = useState<ModifierCategory[]>([]);
   const [modifiers, setModifiers] = useState<Modifier[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [itemModifiers, setItemModifiers] = useState<MenuItemModifier[]>([]);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
@@ -97,6 +116,11 @@ const AdminModifiers = () => {
   // Delete confirmation state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<{ type: "category" | "modifier"; id: string; name: string } | null>(null);
+
+  // Items dialog state
+  const [itemsDialogOpen, setItemsDialogOpen] = useState(false);
+  const [itemsDialogCategoryId, setItemsDialogCategoryId] = useState<string>("");
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     checkAdminAccess();
@@ -128,9 +152,11 @@ const AdminModifiers = () => {
 
   const fetchData = async () => {
     setLoading(true);
-    const [categoriesRes, modifiersRes] = await Promise.all([
+    const [categoriesRes, modifiersRes, menuItemsRes, itemModifiersRes] = await Promise.all([
       supabase.from("modifier_categories").select("*").order("display_order"),
       supabase.from("modifiers").select("*").order("display_order"),
+      supabase.from("menu_items").select("id, name, category_id, menu_categories(name)").order("name"),
+      supabase.from("menu_item_modifiers").select("*"),
     ]);
 
     if (categoriesRes.error) {
@@ -143,6 +169,23 @@ const AdminModifiers = () => {
       toast({ title: "Error", description: "Failed to fetch modifiers", variant: "destructive" });
     } else {
       setModifiers(modifiersRes.data || []);
+    }
+
+    if (menuItemsRes.error) {
+      toast({ title: "Error", description: "Failed to fetch menu items", variant: "destructive" });
+    } else {
+      const items = (menuItemsRes.data || []).map((item: any) => ({
+        id: item.id,
+        name: item.name,
+        category_name: item.menu_categories?.name || "Unknown",
+      }));
+      setMenuItems(items);
+    }
+
+    if (itemModifiersRes.error) {
+      toast({ title: "Error", description: "Failed to fetch item modifiers", variant: "destructive" });
+    } else {
+      setItemModifiers(itemModifiersRes.data || []);
     }
 
     setLoading(false);
@@ -305,6 +348,78 @@ const AdminModifiers = () => {
   const getModifiersForCategory = (categoryId: string) =>
     modifiers.filter((m) => m.modifier_category_id === categoryId);
 
+  const getLinkedItemsForCategory = (categoryId: string) =>
+    itemModifiers
+      .filter((im) => im.modifier_category_id === categoryId)
+      .map((im) => menuItems.find((mi) => mi.id === im.menu_item_id))
+      .filter(Boolean) as MenuItem[];
+
+  // Items linking
+  const openItemsDialog = (categoryId: string) => {
+    setItemsDialogCategoryId(categoryId);
+    const linkedItemIds = itemModifiers
+      .filter((im) => im.modifier_category_id === categoryId)
+      .map((im) => im.menu_item_id);
+    setSelectedItems(new Set(linkedItemIds));
+    setItemsDialogOpen(true);
+  };
+
+  const toggleItemSelection = (itemId: string) => {
+    setSelectedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(itemId)) {
+        next.delete(itemId);
+      } else {
+        next.add(itemId);
+      }
+      return next;
+    });
+  };
+
+  const saveItemLinks = async () => {
+    const currentLinks = itemModifiers.filter((im) => im.modifier_category_id === itemsDialogCategoryId);
+    const currentItemIds = new Set(currentLinks.map((l) => l.menu_item_id));
+
+    // Items to add
+    const toAdd = [...selectedItems].filter((id) => !currentItemIds.has(id));
+    // Items to remove
+    const toRemove = currentLinks.filter((l) => !selectedItems.has(l.menu_item_id)).map((l) => l.id);
+
+    let hasError = false;
+
+    // Remove unlinked items
+    if (toRemove.length > 0) {
+      const { error } = await supabase
+        .from("menu_item_modifiers")
+        .delete()
+        .in("id", toRemove);
+      if (error) hasError = true;
+    }
+
+    // Add new links
+    if (toAdd.length > 0) {
+      const category = categories.find((c) => c.id === itemsDialogCategoryId);
+      const newLinks = toAdd.map((itemId) => ({
+        menu_item_id: itemId,
+        modifier_category_id: itemsDialogCategoryId,
+        is_required: category?.is_required || false,
+        min_selections: category?.is_required ? 1 : 0,
+        max_selections: category?.max_selections || null,
+      }));
+      const { error } = await supabase.from("menu_item_modifiers").insert(newLinks);
+      if (error) hasError = true;
+    }
+
+    if (hasError) {
+      toast({ title: "Error", description: "Failed to update item links", variant: "destructive" });
+    } else {
+      toast({ title: "Success", description: "Item links updated" });
+      fetchData();
+    }
+
+    setItemsDialogOpen(false);
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -415,9 +530,26 @@ const AdminModifiers = () => {
                             {category.is_required && " • Required"}
                             {category.max_selections && ` • Max ${category.max_selections}`}
                           </p>
+                          {(() => {
+                            const linkedItems = getLinkedItemsForCategory(category.id);
+                            return linkedItems.length > 0 ? (
+                              <p className="text-xs text-gold mt-1">
+                                Linked to: {linkedItems.slice(0, 3).map((i) => i.name).join(", ")}
+                                {linkedItems.length > 3 && ` +${linkedItems.length - 3} more`}
+                              </p>
+                            ) : null;
+                          })()}
                         </div>
                       </div>
                       <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => openItemsDialog(category.id)}
+                          title="Link menu items"
+                        >
+                          <Link2 className="w-4 h-4 text-gold" />
+                        </Button>
                         <Button
                           variant="ghost"
                           size="icon"
@@ -648,6 +780,56 @@ const AdminModifiers = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Link Items Dialog */}
+      <Dialog open={itemsDialogOpen} onOpenChange={setItemsDialogOpen}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Link Menu Items</DialogTitle>
+            <DialogDescription>
+              Select which menu items should use the "{categories.find((c) => c.id === itemsDialogCategoryId)?.name}" modifier category.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto py-4">
+            {(() => {
+              // Group items by category
+              const grouped = menuItems.reduce((acc, item) => {
+                if (!acc[item.category_name]) acc[item.category_name] = [];
+                acc[item.category_name].push(item);
+                return acc;
+              }, {} as Record<string, MenuItem[]>);
+
+              return Object.entries(grouped).map(([categoryName, items]) => (
+                <div key={categoryName} className="mb-4">
+                  <h4 className="font-medium text-sm text-muted-foreground mb-2">{categoryName}</h4>
+                  <div className="space-y-2">
+                    {items.map((item) => (
+                      <label
+                        key={item.id}
+                        className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 cursor-pointer"
+                      >
+                        <Checkbox
+                          checked={selectedItems.has(item.id)}
+                          onCheckedChange={() => toggleItemSelection(item.id)}
+                        />
+                        <span className="text-sm text-foreground">{item.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ));
+            })()}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setItemsDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={saveItemLinks}>
+              Save Links
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
