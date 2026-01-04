@@ -73,27 +73,6 @@ export const HeroSection = () => {
 
       {/* Centered Content - Tresla Style */}
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
-        
-
-        
-
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 1,
-        delay: 1.1
-      }}>
-          <Link to="/order">
-            <Button variant="outline" size="lg" className="px-12 py-6 text-base tracking-widest uppercase border-cream/50 text-cream bg-transparent hover:bg-cream/10 hover:border-cream transition-all duration-500">
-              Enter
-            </Button>
-          </Link>
-        </motion.div>
-
         {/* Title */}
         <motion.div initial={{
         opacity: 0,
@@ -103,8 +82,8 @@ export const HeroSection = () => {
         y: 0
       }} transition={{
         duration: 1,
-        delay: 1.4
-      }} className="mt-16 text-center">
+        delay: 1.1
+      }} className="text-center">
           <h1 className="text-4xl md:text-6xl font-serif font-bold text-cream tracking-wide">TOP NOTCH EVENTS</h1>
           <p className="text-lg md:text-xl text-cream/80 uppercase tracking-[0.3em] mt-2">World Class Premium Catering</p>
         </motion.div>
@@ -118,7 +97,7 @@ export const HeroSection = () => {
         y: 0
       }} transition={{
         duration: 1,
-        delay: 1.7
+        delay: 1.4
       }} className="mt-8 flex flex-wrap justify-center gap-8 md:gap-16">
           <div className="text-center">
             <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={500} suffix="+" /></p>
@@ -132,6 +111,24 @@ export const HeroSection = () => {
             <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={98} suffix="%" /></p>
             <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Client Satisfaction</p>
           </div>
+        </motion.div>
+
+        {/* Enter Button */}
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 1,
+        delay: 1.7
+      }} className="mt-10">
+          <Link to="/order">
+            <Button variant="outline" size="lg" className="px-12 py-6 text-base tracking-widest uppercase border-cream/50 text-cream bg-transparent hover:bg-cream/10 hover:border-cream transition-all duration-500">
+              Enter
+            </Button>
+          </Link>
         </motion.div>
       </div>
 
