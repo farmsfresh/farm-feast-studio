@@ -371,9 +371,9 @@ const AdminMenuImages = () => {
     setBulkDialogOpen(false);
   };
 
-  const getUnlinkedItems = () => {
+  const getAvailableItems = () => {
     const linkedItemIds = uploadedImages.map(img => img.linkedItemId).filter(Boolean);
-    return menuItems.filter(item => !item.image_url && !linkedItemIds.includes(item.id));
+    return menuItems.filter(item => !linkedItemIds.includes(item.id));
   };
 
   const filteredItems = menuItems.filter((item) => {
@@ -756,7 +756,7 @@ const AdminMenuImages = () => {
                               <SelectValue placeholder="Link to menu item..." />
                             </SelectTrigger>
                             <SelectContent>
-                              {getUnlinkedItems().map((item) => (
+                              {getAvailableItems().map((item) => (
                                 <SelectItem key={item.id} value={item.id}>
                                   <div className="flex items-center gap-2">
                                     <span>{item.name}</span>
