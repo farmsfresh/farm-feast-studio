@@ -98,14 +98,7 @@ export const HeroSection = () => {
     }} transition={{
       delay: 2
     }} className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        <div className="w-6 h-10 rounded-full border-2 border-cream/30 flex items-start justify-center p-2">
-          <motion.div animate={{
-          y: [0, 8, 0]
-        }} transition={{
-          duration: 1.5,
-          repeat: Infinity
-        }} className="w-1.5 h-1.5 rounded-full bg-primary" />
-        </div>
+        
       </motion.div>
 
       {/* Awards/Badges - Bottom Left like Tresla */}
@@ -119,9 +112,7 @@ export const HeroSection = () => {
       duration: 1,
       delay: 1.5
     }} className="absolute bottom-8 left-8 hidden md:block">
-        <p className="text-cream/50 text-xs uppercase tracking-wider max-w-xs leading-relaxed">
-          Premium Catering Services · Farm to Table Excellence · 15+ Years Experience
-        </p>
+        
       </motion.div>
     </section>;
 };
