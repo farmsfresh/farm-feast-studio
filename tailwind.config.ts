@@ -82,29 +82,38 @@ export default {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
   			},
-  			gold: {
-  				DEFAULT: 'hsl(var(--gold))',
-  				light: 'hsl(var(--gold-light))'
-  			},
-  			forest: {
-  				DEFAULT: 'hsl(var(--forest))',
-  				dark: 'hsl(var(--forest-dark))'
-  			},
-  			cream: {
-  				DEFAULT: 'hsl(var(--cream))',
-  				dark: 'hsl(var(--cream-dark))'
-  			},
-  			earth: 'hsl(var(--earth))',
-  			sidebar: {
-  				DEFAULT: 'hsl(var(--sidebar-background))',
-  				foreground: 'hsl(var(--sidebar-foreground))',
-  				primary: 'hsl(var(--sidebar-primary))',
-  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-  				accent: 'hsl(var(--sidebar-accent))',
-  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-  				border: 'hsl(var(--sidebar-border))',
-  				ring: 'hsl(var(--sidebar-ring))'
-  			}
+			gold: {
+				DEFAULT: 'hsl(var(--gold))',
+				light: 'hsl(var(--gold-light))'
+			},
+			forest: {
+				DEFAULT: 'hsl(var(--forest))',
+				dark: 'hsl(var(--forest-dark))'
+			},
+			cream: {
+				DEFAULT: 'hsl(var(--cream))',
+				dark: 'hsl(var(--cream-dark))'
+			},
+			earth: 'hsl(var(--earth))',
+			purple: {
+				DEFAULT: 'hsl(var(--purple))',
+				light: 'hsl(var(--purple-light))',
+				dark: 'hsl(var(--purple-dark))'
+			},
+			header: {
+				DEFAULT: 'hsl(var(--header-bg))',
+				text: 'hsl(var(--header-text))'
+			},
+			sidebar: {
+				DEFAULT: 'hsl(var(--sidebar-background))',
+				foreground: 'hsl(var(--sidebar-foreground))',
+				primary: 'hsl(var(--sidebar-primary))',
+				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+				accent: 'hsl(var(--sidebar-accent))',
+				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
+				border: 'hsl(var(--sidebar-border))',
+				ring: 'hsl(var(--sidebar-ring))'
+			}
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

@@ -83,18 +83,18 @@ export const Navbar = () => {
   }} transition={{
     duration: 0.6,
     ease: "easeOut"
-  }} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-background/95 backdrop-blur-md shadow-elegant py-2" : "bg-black/30 backdrop-blur-sm py-3"}`}>
+  }} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-header shadow-elegant py-2" : "bg-header/95 backdrop-blur-sm py-3"}`}>
       {/* Top bar with contact info */}
-      <div className={`hidden md:block border-b transition-colors ${isScrolled ? "border-border/30 bg-muted/50" : "border-white/10 bg-black/20"}`}>
+      <div className={`hidden md:block border-b transition-colors ${isScrolled ? "border-primary/20 bg-forest-dark/50" : "border-primary/10 bg-forest-dark/30"}`}>
         <div className="container mx-auto px-4 lg:px-8 py-2">
           <div className="flex items-center justify-between">
             {/* Contact Info */}
             <div className="flex items-center gap-6 text-sm">
-              <a href="tel:650-866-0520" className={`flex items-center gap-2 transition-colors ${isScrolled ? "text-foreground/70 hover:text-gold" : "text-cream/70 hover:text-cream"}`}>
+              <a href="tel:650-866-0520" className="flex items-center gap-2 transition-colors text-cream/90 hover:text-primary">
                 <Phone className="w-3.5 h-3.5" />
                 <span>650-866-0520</span>
               </a>
-              <a href="mailto:catering@farmsfreshfood.com" className={`flex items-center gap-2 transition-colors ${isScrolled ? "text-foreground/70 hover:text-gold" : "text-cream/70 hover:text-cream"}`}>
+              <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-2 transition-colors text-cream/90 hover:text-primary">
                 <Mail className="w-3.5 h-3.5" />
                 <span>catering@farmsfreshfood.com</span>
               </a>
@@ -102,7 +102,7 @@ export const Navbar = () => {
             
             {/* Social Media Icons - centered */}
             <div className="flex items-center gap-2">
-              {socialLinks.map(social => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className={`p-1.5 rounded-full transition-all duration-300 ${isScrolled ? "text-foreground/70 hover:text-gold hover:bg-gold/10" : "text-cream/70 hover:text-cream hover:bg-white/10"}`} aria-label={social.label}>
+              {socialLinks.map(social => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full transition-all duration-300 text-cream/80 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
                   <social.icon className="w-4 h-4" />
                 </a>)}
             </div>
@@ -112,20 +112,20 @@ export const Navbar = () => {
       
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between">
-          {/* Logo and Title - increased logo size by 1/3 (h-16 to h-20) */}
+          {/* Logo and Title */}
           <Link to="/" className="flex items-center gap-3 group">
             <img src={logo} alt="Farms Fresh Food Catering" className="h-24 md:h-28 w-auto group-hover:scale-105 transition-transform duration-300" />
             <div className="hidden sm:block">
-              <h1 className={`font-serif text-xl md:text-2xl font-bold leading-tight ${isScrolled ? "text-foreground" : "text-cream"}`}>
+              <h1 className="font-serif text-xl md:text-2xl font-bold leading-tight text-cream">
                 FARMS FRESH FOOD
               </h1>
-              <span className={`text-[10px] md:text-xs tracking-widest ${isScrolled ? "text-gold" : "text-gold-light"}`}>EVENTS, CATERING AND CORPORATE KITCHEN SERVICES</span>
+              <span className="text-[10px] md:text-xs tracking-widest text-primary">EVENTS, CATERING AND CORPORATE KITCHEN SERVICES</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-1">
-            {navItems.map(item => <Link key={item.name} to={item.path} className={`px-3 py-2 text-sm font-medium transition-all duration-300 rounded-md ${location.pathname === item.path ? isScrolled ? "text-gold bg-gold/10" : "text-gold-light bg-white/10" : isScrolled ? "text-foreground hover:text-gold hover:bg-gold/5" : "text-cream/90 hover:text-cream hover:bg-white/10"}`}>
+            {navItems.map(item => <Link key={item.name} to={item.path} className={`px-3 py-2 text-sm font-medium transition-all duration-300 rounded-md ${location.pathname === item.path ? "text-primary bg-primary/15" : "text-cream/90 hover:text-primary hover:bg-primary/10"}`}>
                 {item.name}
               </Link>)}
           </div>
@@ -133,7 +133,7 @@ export const Navbar = () => {
           {/* My Account */}
           <div className="hidden lg:flex items-center gap-4">
             <Link to="/account">
-              <Button variant={isScrolled ? "elegant" : "hero-outline"} size="sm" className="gap-2">
+              <Button variant="outline" size="sm" className="gap-2 border-primary/50 text-cream hover:bg-primary/20 hover:text-primary hover:border-primary">
                 <User className="w-4 h-4" />
                 My Account
               </Button>
@@ -141,7 +141,7 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button onClick={() => setIsOpen(!isOpen)} className={`lg:hidden p-2 rounded-md transition-colors ${isScrolled ? "text-foreground" : "text-cream"}`}>
+          <button onClick={() => setIsOpen(!isOpen)} className="lg:hidden p-2 rounded-md transition-colors text-cream hover:text-primary">
             {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
@@ -160,33 +160,33 @@ export const Navbar = () => {
         height: 0
       }} transition={{
         duration: 0.3
-      }} className="lg:hidden bg-background/98 backdrop-blur-md border-t border-border">
+      }} className="lg:hidden bg-header border-t border-primary/20">
             <div className="container mx-auto px-4 py-4 flex flex-col gap-2">
               {/* Mobile Contact Info */}
-              <div className="flex flex-col gap-2 px-4 py-3 mb-2 border-b border-border">
-                <a href="tel:650-866-0520" className="flex items-center gap-2 text-sm text-foreground/70 hover:text-gold">
+              <div className="flex flex-col gap-2 px-4 py-3 mb-2 border-b border-primary/20">
+                <a href="tel:650-866-0520" className="flex items-center gap-2 text-sm text-cream/80 hover:text-primary">
                   <Phone className="w-4 h-4" />
                   <span>650-866-0520</span>
                 </a>
-                <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-2 text-sm text-foreground/70 hover:text-gold">
+                <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-2 text-sm text-cream/80 hover:text-primary">
                   <Mail className="w-4 h-4" />
                   <span>catering@farmsfreshfood.com</span>
                 </a>
               </div>
               
-              {navItems.map(item => <Link key={item.name} to={item.path} onClick={() => setIsOpen(false)} className={`px-4 py-3 text-sm font-medium rounded-md transition-all ${location.pathname === item.path ? "text-gold bg-gold/10" : "text-foreground hover:bg-muted"}`}>
+              {navItems.map(item => <Link key={item.name} to={item.path} onClick={() => setIsOpen(false)} className={`px-4 py-3 text-sm font-medium rounded-md transition-all ${location.pathname === item.path ? "text-primary bg-primary/15" : "text-cream/90 hover:bg-primary/10 hover:text-primary"}`}>
                   {item.name}
                 </Link>)}
               
               {/* Mobile Social Links */}
-              <div className="flex items-center justify-center gap-3 px-4 py-3 border-t border-border mt-2">
-                {socialLinks.map(social => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full text-foreground/70 hover:text-gold hover:bg-gold/10 transition-all" aria-label={social.label}>
+              <div className="flex items-center justify-center gap-3 px-4 py-3 border-t border-primary/20 mt-2">
+                {socialLinks.map(social => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full text-cream/70 hover:text-primary hover:bg-primary/10 transition-all" aria-label={social.label}>
                     <social.icon className="w-5 h-5" />
                   </a>)}
               </div>
               
               <Link to="/account" onClick={() => setIsOpen(false)}>
-                <Button variant="elegant" className="w-full mt-2 gap-2">
+                <Button className="w-full mt-2 gap-2 bg-primary text-primary-foreground hover:bg-primary/90">
                   <User className="w-4 h-4" />
                   My Account
                 </Button>
