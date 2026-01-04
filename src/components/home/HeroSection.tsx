@@ -83,9 +83,12 @@ export const HeroSection = () => {
       }} transition={{
         duration: 1,
         delay: 1.1
-      }} className="text-center">
-          <h1 className="text-4xl md:text-6xl font-serif font-bold text-cream tracking-wide">TOP NOTCH EVENTS</h1>
-          <p className="text-lg md:text-xl text-cream/80 uppercase tracking-[0.3em] mt-2">World Class Premium Catering</p>
+      }} className="text-center px-2">
+          <h1 className="text-2xl sm:text-4xl md:text-6xl font-serif font-bold text-cream tracking-wide leading-tight">
+            <span className="block">FARMS FRESH FOOD</span>
+            <span className="block">&amp; EVENTS</span>
+          </h1>
+          <p className="text-sm sm:text-lg md:text-xl text-cream/80 uppercase tracking-[0.15em] sm:tracking-[0.3em] mt-3">World Class Premium Catering</p>
         </motion.div>
 
         {/* Metrics */}
