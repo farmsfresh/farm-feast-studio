@@ -103,16 +103,16 @@ export const HeroSection = () => {
         delay: 1.4
       }} className="mt-8 flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-8 md:gap-16">
           <div className="text-center">
-            <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={500} suffix="+" /></p>
-            <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Events Catered</p>
+            <p className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={500} suffix="+" /></p>
+            <p className="text-xs sm:text-sm text-cream/60 uppercase tracking-wider mt-1">Events Catered</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={15} suffix="+" /></p>
-            <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Years Experience</p>
+            <p className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={15} suffix="+" /></p>
+            <p className="text-xs sm:text-sm text-cream/60 uppercase tracking-wider mt-1">Years Experience</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={98} suffix="%" /></p>
-            <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Client Satisfaction</p>
+            <p className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={98} suffix="%" /></p>
+            <p className="text-xs sm:text-sm text-cream/60 uppercase tracking-wider mt-1">Client Satisfaction</p>
           </div>
         </motion.div>
 
