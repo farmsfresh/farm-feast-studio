@@ -36,6 +36,9 @@ import {
   Trash2,
   XCircle,
   Check,
+  X,
+  Link2,
+  Images,
 } from "lucide-react";
 
 interface MenuItem {
@@ -51,6 +54,16 @@ interface Category {
   name: string;
 }
 
+interface UploadedImage {
+  id: string;
+  file: File;
+  preview: string;
+  uploading: boolean;
+  uploaded: boolean;
+  url?: string;
+  linkedItemId?: string;
+}
+
 const AdminMenuImages = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -61,7 +74,11 @@ const AdminMenuImages = () => {
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [bulkDialogOpen, setBulkDialogOpen] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState<UploadedImage[]>([]);
+  const [bulkUploading, setBulkUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const bulkFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -221,6 +238,144 @@ const AdminMenuImages = () => {
     }
   };
 
+  // Bulk upload handlers
+  const handleBulkFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const validFiles = files.filter(file => {
+      if (!file.type.startsWith("image/")) return false;
+      if (file.size > 5 * 1024 * 1024) return false;
+      return true;
+    });
+
+    if (validFiles.length !== files.length) {
+      toast({
+        title: "Some files skipped",
+        description: "Only images under 5MB are allowed",
+        variant: "destructive",
+      });
+    }
+
+    const newImages: UploadedImage[] = validFiles.map(file => ({
+      id: `${file.name}-${Date.now()}-${Math.random()}`,
+      file,
+      preview: URL.createObjectURL(file),
+      uploading: false,
+      uploaded: false,
+    }));
+
+    setUploadedImages(prev => [...prev, ...newImages]);
+    
+    if (bulkFileInputRef.current) {
+      bulkFileInputRef.current.value = "";
+    }
+  };
+
+  const removeUploadedImage = (id: string) => {
+    setUploadedImages(prev => {
+      const img = prev.find(i => i.id === id);
+      if (img) URL.revokeObjectURL(img.preview);
+      return prev.filter(i => i.id !== id);
+    });
+  };
+
+  const linkImageToItem = (imageId: string, itemId: string) => {
+    setUploadedImages(prev =>
+      prev.map(img =>
+        img.id === imageId ? { ...img, linkedItemId: itemId } : img
+      )
+    );
+  };
+
+  const uploadAndLinkAll = async () => {
+    const imagesToUpload = uploadedImages.filter(img => img.linkedItemId && !img.uploaded);
+    
+    if (imagesToUpload.length === 0) {
+      toast({
+        title: "No images to upload",
+        description: "Please link images to menu items first",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setBulkUploading(true);
+
+    let successCount = 0;
+    let failCount = 0;
+
+    for (const img of imagesToUpload) {
+      setUploadedImages(prev =>
+        prev.map(i => (i.id === img.id ? { ...i, uploading: true } : i))
+      );
+
+      try {
+        const fileExt = img.file.name.split(".").pop();
+        const fileName = `${img.linkedItemId}-${Date.now()}.${fileExt}`;
+        const filePath = `menu-items/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("photos")
+          .upload(filePath, img.file, { upsert: true });
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("photos")
+          .getPublicUrl(filePath);
+
+        const { error: updateError } = await supabase
+          .from("menu_items")
+          .update({ image_url: publicUrl })
+          .eq("id", img.linkedItemId);
+
+        if (updateError) throw updateError;
+
+        setUploadedImages(prev =>
+          prev.map(i =>
+            i.id === img.id ? { ...i, uploading: false, uploaded: true, url: publicUrl } : i
+          )
+        );
+
+        setMenuItems(prev =>
+          prev.map(item =>
+            item.id === img.linkedItemId ? { ...item, image_url: publicUrl } : item
+          )
+        );
+
+        successCount++;
+      } catch (error) {
+        console.error("Upload error:", error);
+        setUploadedImages(prev =>
+          prev.map(i => (i.id === img.id ? { ...i, uploading: false } : i))
+        );
+        failCount++;
+      }
+    }
+
+    setBulkUploading(false);
+
+    toast({
+      title: "Bulk upload complete",
+      description: `${successCount} uploaded successfully${failCount > 0 ? `, ${failCount} failed` : ""}`,
+    });
+
+    // Remove successfully uploaded images after a delay
+    setTimeout(() => {
+      setUploadedImages(prev => prev.filter(img => !img.uploaded));
+    }, 2000);
+  };
+
+  const closeBulkDialog = () => {
+    uploadedImages.forEach(img => URL.revokeObjectURL(img.preview));
+    setUploadedImages([]);
+    setBulkDialogOpen(false);
+  };
+
+  const getUnlinkedItems = () => {
+    const linkedItemIds = uploadedImages.map(img => img.linkedItemId).filter(Boolean);
+    return menuItems.filter(item => !item.image_url && !linkedItemIds.includes(item.id));
+  };
+
   const filteredItems = menuItems.filter((item) => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory = categoryFilter === "all" || item.category_id === categoryFilter;
@@ -320,6 +475,13 @@ const AdminMenuImages = () => {
                 ))}
               </SelectContent>
             </Select>
+            <Button 
+              onClick={() => setBulkDialogOpen(true)}
+              className="gap-2"
+            >
+              <Images className="w-4 h-4" />
+              Bulk Upload
+            </Button>
           </div>
 
           {/* Stats */}
@@ -486,6 +648,174 @@ const AdminMenuImages = () => {
                 )}
               </label>
             </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Bulk Upload Dialog */}
+      <Dialog open={bulkDialogOpen} onOpenChange={(open) => !open && closeBulkDialog()}>
+        <DialogContent className="sm:max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Images className="w-5 h-5" />
+              Bulk Image Upload
+            </DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-6">
+            {/* Upload area */}
+            <div className="border-2 border-dashed border-border rounded-lg p-8 text-center">
+              <input
+                ref={bulkFileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleBulkFileSelect}
+                className="hidden"
+                id="bulk-image-upload"
+              />
+              <label
+                htmlFor="bulk-image-upload"
+                className="cursor-pointer flex flex-col items-center gap-2"
+              >
+                <Upload className="w-10 h-10 text-muted-foreground" />
+                <p className="text-foreground font-medium">Click to select images</p>
+                <p className="text-sm text-muted-foreground">
+                  Select multiple PNG, JPG or WEBP files (max 5MB each)
+                </p>
+              </label>
+            </div>
+
+            {/* Uploaded images grid */}
+            {uploadedImages.length > 0 && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-foreground">
+                    {uploadedImages.length} image{uploadedImages.length > 1 ? "s" : ""} selected
+                  </h3>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        uploadedImages.forEach(img => URL.revokeObjectURL(img.preview));
+                        setUploadedImages([]);
+                      }}
+                    >
+                      Clear All
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {uploadedImages.map((img) => (
+                    <div
+                      key={img.id}
+                      className={`relative bg-card border rounded-lg overflow-hidden ${
+                        img.uploaded ? "border-green-500" : "border-border"
+                      }`}
+                    >
+                      {/* Image preview */}
+                      <div className="aspect-video relative">
+                        <img
+                          src={img.preview}
+                          alt="Preview"
+                          className="w-full h-full object-cover"
+                        />
+                        {img.uploading && (
+                          <div className="absolute inset-0 bg-background/80 flex items-center justify-center">
+                            <Loader2 className="w-6 h-6 animate-spin text-gold" />
+                          </div>
+                        )}
+                        {img.uploaded && (
+                          <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
+                            <Check className="w-8 h-8 text-green-500" />
+                          </div>
+                        )}
+                        {!img.uploaded && !img.uploading && (
+                          <button
+                            onClick={() => removeUploadedImage(img.id)}
+                            className="absolute top-2 right-2 p-1 bg-background/80 rounded-full hover:bg-destructive hover:text-destructive-foreground transition-colors"
+                          >
+                            <X className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Link to menu item */}
+                      <div className="p-3">
+                        <p className="text-xs text-muted-foreground mb-2 truncate">
+                          {img.file.name}
+                        </p>
+                        {!img.uploaded && (
+                          <Select
+                            value={img.linkedItemId || ""}
+                            onValueChange={(value) => linkImageToItem(img.id, value)}
+                          >
+                            <SelectTrigger className="w-full h-9">
+                              <SelectValue placeholder="Link to menu item..." />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {getUnlinkedItems().map((item) => (
+                                <SelectItem key={item.id} value={item.id}>
+                                  <div className="flex items-center gap-2">
+                                    <span>{item.name}</span>
+                                    <span className="text-xs text-muted-foreground">
+                                      ({getCategoryName(item.category_id)})
+                                    </span>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                              {img.linkedItemId && (
+                                <SelectItem value={img.linkedItemId}>
+                                  {menuItems.find(i => i.id === img.linkedItemId)?.name}
+                                </SelectItem>
+                              )}
+                            </SelectContent>
+                          </Select>
+                        )}
+                        {img.linkedItemId && !img.uploaded && (
+                          <div className="mt-2 flex items-center gap-1 text-xs text-green-500">
+                            <Link2 className="w-3 h-3" />
+                            Linked to: {menuItems.find(i => i.id === img.linkedItemId)?.name}
+                          </div>
+                        )}
+                        {img.uploaded && (
+                          <div className="flex items-center gap-1 text-xs text-green-500">
+                            <Check className="w-3 h-3" />
+                            Uploaded successfully
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Upload button */}
+                <div className="flex justify-end gap-3 pt-4 border-t border-border">
+                  <Button variant="outline" onClick={closeBulkDialog}>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={uploadAndLinkAll}
+                    disabled={bulkUploading || uploadedImages.filter(i => i.linkedItemId && !i.uploaded).length === 0}
+                    className="gap-2"
+                  >
+                    {bulkUploading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        Uploading...
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="w-4 h-4" />
+                        Upload {uploadedImages.filter(i => i.linkedItemId && !i.uploaded).length} Image{uploadedImages.filter(i => i.linkedItemId && !i.uploaded).length !== 1 ? "s" : ""}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </DialogContent>
       </Dialog>
