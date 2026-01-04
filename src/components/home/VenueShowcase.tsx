@@ -150,7 +150,7 @@ const VenueCard = ({ venue, index }: { venue: typeof venues[0]; index: number })
 
 export const VenueShowcase = () => {
   return (
-    <section className="py-24 bg-background">
+    <section className="pt-8 pb-24 bg-background">
       <div className="container mx-auto px-4 lg:px-8">
         {/* Section Header */}
         <motion.div
