@@ -1,11 +1,33 @@
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useInView, useSpring, useTransform } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import heroVideo1 from "@/assets/hero-video-1.mp4";
 import heroVideo2 from "@/assets/hero-video-2.mp4";
 import heroVideo3 from "@/assets/hero-video-3.mp4";
 const videos = [heroVideo1, heroVideo2, heroVideo3];
+
+const AnimatedCounter = ({ value, suffix = "", duration = 2 }: { value: number; suffix?: string; duration?: number }) => {
+  const ref = useRef<HTMLSpanElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const spring = useSpring(0, { duration: duration * 1000, bounce: 0 });
+  const display = useTransform(spring, (current) => Math.round(current));
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    if (isInView) {
+      spring.set(value);
+    }
+  }, [isInView, spring, value]);
+
+  useEffect(() => {
+    return display.on("change", (latest) => {
+      setDisplayValue(latest);
+    });
+  }, [display]);
+
+  return <span ref={ref}>{displayValue}{suffix}</span>;
+};
 export const HeroSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -87,15 +109,15 @@ export const HeroSection = () => {
         delay: 1.4
       }} className="mt-12 flex flex-wrap justify-center gap-8 md:gap-16">
           <div className="text-center">
-            <p className="text-3xl md:text-4xl font-serif font-bold text-cream">500+</p>
+            <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={500} suffix="+" /></p>
             <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Events Catered</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl md:text-4xl font-serif font-bold text-cream">15+</p>
+            <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={15} suffix="+" /></p>
             <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Years Experience</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl md:text-4xl font-serif font-bold text-cream">98%</p>
+            <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={98} suffix="%" /></p>
             <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Client Satisfaction</p>
           </div>
         </motion.div>
