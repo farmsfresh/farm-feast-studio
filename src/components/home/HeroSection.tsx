@@ -65,9 +65,7 @@ export const HeroSection = () => {
       }} transition={{
         duration: 1,
         delay: 0.8
-      }} className="text-cream/70 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-12 leading-relaxed">
-          Elevated Catering, Corporate Dining, Event Venues — Hospitality Without Limits
-        </motion.p>
+      }} className="text-cream/70 text-sm sm:text-base max-w-2xl mx-auto mb-12 leading-relaxed font-bold md:text-4xl">PREMIUM WORLD CLASS FOOD AND KITCHEN SERVICES</motion.p>
 
         <motion.div initial={{
         opacity: 0,
