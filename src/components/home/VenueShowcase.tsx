@@ -1,0 +1,198 @@
+import { useState, useRef } from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { ArrowRight, Play } from "lucide-react";
+import heroVideo1 from "@/assets/hero-video-1.mp4";
+import heroVideo2 from "@/assets/hero-video-2.mp4";
+import heroVideo3 from "@/assets/hero-video-3.mp4";
+
+const venues = [
+  {
+    id: 1,
+    title: "Corporate Events",
+    description: "Elegant dining experiences for your business gatherings",
+    video: heroVideo1,
+    image: "/Chicken Kabob plate sk.jpg",
+  },
+  {
+    id: 2,
+    title: "Wedding Catering",
+    description: "Make your special day unforgettable with exquisite cuisine",
+    video: heroVideo2,
+    image: "/Chicken Shawarma plate sk1.jpg",
+  },
+  {
+    id: 3,
+    title: "Private Dining",
+    description: "Intimate gatherings with personalized culinary experiences",
+    video: heroVideo3,
+    image: "/Grilled Salmon plate sk.jpg",
+  },
+  {
+    id: 4,
+    title: "Outdoor Events",
+    description: "Fresh air and fresh flavors for your outdoor celebrations",
+    video: heroVideo1,
+    image: "/Falafel Plate sk.png",
+  },
+];
+
+const VenueCard = ({ venue, index }: { venue: typeof venues[0]; index: number }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    if (videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    if (videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.currentTime = 0;
+    }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.15 }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="group relative aspect-[4/5] overflow-hidden rounded-lg cursor-pointer"
+    >
+      {/* Background Image */}
+      <img
+        src={venue.image}
+        alt={venue.title}
+        className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
+          isHovered ? "opacity-0 scale-110" : "opacity-100 scale-100"
+        }`}
+      />
+
+      {/* Video - plays on hover */}
+      <video
+        ref={videoRef}
+        muted
+        loop
+        playsInline
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
+          isHovered ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <source src={venue.video} type="video/mp4" />
+      </video>
+
+      {/* Overlay gradient */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+
+      {/* Play indicator */}
+      <div
+        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${
+          isHovered ? "opacity-0 scale-75" : "opacity-100 scale-100"
+        }`}
+      >
+        <div className="w-16 h-16 rounded-full border-2 border-cream/50 flex items-center justify-center backdrop-blur-sm bg-black/20">
+          <Play className="w-6 h-6 text-cream fill-cream/50" />
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="absolute bottom-0 left-0 right-0 p-6">
+        <motion.div
+          initial={false}
+          animate={{ y: isHovered ? 0 : 10 }}
+          transition={{ duration: 0.3 }}
+        >
+          <h3 className="font-serif text-2xl md:text-3xl font-bold text-cream mb-2">
+            {venue.title}
+          </h3>
+          <p
+            className={`text-cream/70 text-sm mb-4 transition-all duration-500 ${
+              isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+          >
+            {venue.description}
+          </p>
+          <div
+            className={`flex items-center gap-2 text-primary text-sm font-medium transition-all duration-500 ${
+              isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+          >
+            <span>Explore</span>
+            <ArrowRight className="w-4 h-4" />
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Purple accent glow on hover */}
+      <div
+        className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
+          isHovered ? "opacity-100" : "opacity-0"
+        }`}
+        style={{
+          background:
+            "radial-gradient(circle at center, hsl(280 50% 55% / 0.15) 0%, transparent 70%)",
+        }}
+      />
+    </motion.div>
+  );
+};
+
+export const VenueShowcase = () => {
+  return (
+    <section className="py-24 bg-background">
+      <div className="container mx-auto px-4 lg:px-8">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-16"
+        >
+          <span className="inline-block px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium tracking-wide mb-4 border border-primary/20">
+            Our Venues
+          </span>
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
+            Experience <span className="text-primary">Excellence</span>
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+            From intimate gatherings to grand celebrations, we create unforgettable culinary experiences
+          </p>
+        </motion.div>
+
+        {/* Venue Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {venues.map((venue, index) => (
+            <Link to="/services" key={venue.id}>
+              <VenueCard venue={venue} index={index} />
+            </Link>
+          ))}
+        </div>
+
+        {/* Bottom CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="text-center mt-16"
+        >
+          <Link
+            to="/services"
+            className="inline-flex items-center gap-3 text-primary hover:text-primary/80 transition-colors group"
+          >
+            <span className="text-lg font-medium tracking-wide uppercase">View All Services</span>
+            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+          </Link>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
