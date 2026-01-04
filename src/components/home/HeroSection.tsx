@@ -68,7 +68,7 @@ export const HeroSection = () => {
           </motion.video>
         </AnimatePresence>
         {/* Dark elegant overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 shadow-2xl" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 shadow-xl" />
       </div>
 
       {/* Centered Content - Tresla Style */}
