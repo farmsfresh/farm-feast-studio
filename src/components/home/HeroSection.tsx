@@ -94,7 +94,7 @@ export const HeroSection = () => {
           </Link>
         </motion.div>
 
-        {/* Metrics */}
+        {/* Title */}
         <motion.div initial={{
         opacity: 0,
         y: 20
@@ -104,7 +104,22 @@ export const HeroSection = () => {
       }} transition={{
         duration: 1,
         delay: 1.4
-      }} className="mt-12 flex flex-wrap justify-center gap-8 md:gap-16">
+      }} className="mt-16 text-center">
+          <h1 className="text-4xl md:text-6xl font-serif font-bold text-cream tracking-wide">TOP NOTCH EVENTS</h1>
+          <p className="text-lg md:text-xl text-cream/80 uppercase tracking-[0.3em] mt-2">World Class Premium Catering</p>
+        </motion.div>
+
+        {/* Metrics */}
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 1,
+        delay: 1.7
+      }} className="mt-8 flex flex-wrap justify-center gap-8 md:gap-16">
           <div className="text-center">
             <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={500} suffix="+" /></p>
             <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Events Catered</p>
