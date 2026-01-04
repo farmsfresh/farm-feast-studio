@@ -5,6 +5,10 @@ import { ArrowRight, Play } from "lucide-react";
 import heroVideo1 from "@/assets/hero-video-1.mp4";
 import heroVideo2 from "@/assets/hero-video-2.mp4";
 import heroVideo3 from "@/assets/hero-video-3.mp4";
+import venueCorporate from "@/assets/venue-corporate.jpg";
+import venueWedding from "@/assets/venue-wedding.jpg";
+import venuePrivate from "@/assets/venue-private.jpg";
+import venueOutdoor from "@/assets/venue-outdoor.jpg";
 
 const venues = [
   {
@@ -12,28 +16,28 @@ const venues = [
     title: "Corporate Events",
     description: "Elegant dining experiences for your business gatherings",
     video: heroVideo1,
-    image: "/Chicken Kabob plate sk.jpg",
+    image: venueCorporate,
   },
   {
     id: 2,
     title: "Wedding Catering",
     description: "Make your special day unforgettable with exquisite cuisine",
     video: heroVideo2,
-    image: "/Chicken Shawarma plate sk1.jpg",
+    image: venueWedding,
   },
   {
     id: 3,
     title: "Private Dining",
     description: "Intimate gatherings with personalized culinary experiences",
     video: heroVideo3,
-    image: "/Grilled Salmon plate sk.jpg",
+    image: venuePrivate,
   },
   {
     id: 4,
     title: "Outdoor Events",
     description: "Fresh air and fresh flavors for your outdoor celebrations",
     video: heroVideo1,
-    image: "/Falafel Plate sk.png",
+    image: venueOutdoor,
   },
 ];
 
