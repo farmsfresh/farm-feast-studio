@@ -14,48 +14,64 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
+// Import service images
+import serviceEventPlanning from "@/assets/service-event-planning.jpg";
+import serviceEventManagement from "@/assets/service-event-management.jpg";
+import serviceCulinary from "@/assets/service-culinary.jpg";
+import serviceBoxedMeals from "@/assets/service-boxed-meals.jpg";
+import serviceMicroKitchen from "@/assets/service-micro-kitchen.jpg";
+import serviceCatering from "@/assets/service-catering.jpg";
+import servicePopup from "@/assets/service-popup.jpg";
+
 const services = [
   {
     icon: CalendarCheck,
     title: "Event Planning",
     description: "Full-service event planning from concept to execution. Our team handles every detail to bring your vision to life.",
     features: ["Venue selection assistance", "Theme development", "Vendor coordination", "Timeline management", "Budget optimization"],
+    image: serviceEventPlanning,
   },
   {
     icon: Users,
     title: "Event Management",
     description: "Professional on-site coordination ensuring flawless execution of your special occasions from start to finish.",
     features: ["Day-of coordination", "Staff management", "Guest services", "Logistics handling", "Emergency planning"],
+    image: serviceEventManagement,
   },
   {
     icon: ChefHat,
     title: "On-site Culinary Management",
     description: "Expert chefs managing your kitchen operations with precision, creativity, and unwavering quality standards.",
     features: ["Menu development", "Kitchen staff training", "Quality control", "Inventory management", "Health compliance"],
+    image: serviceCulinary,
   },
   {
     icon: Package,
     title: "Boxed Meals",
     description: "A premium meal program that brings home-cooking quality dining straight to your office in beautifully presented, sustainably packaged individual boxes.",
     features: ["Individual packaging", "Sustainable materials", "Fresh daily preparation", "Dietary accommodations", "Swift delivery"],
+    image: serviceBoxedMeals,
   },
   {
     icon: Coffee,
     title: "Micro Kitchens",
     description: "Compact culinary solutions perfect for offices, co-working spaces, and corporate environments.",
     features: ["Daily fresh options", "Healthy selections", "Coffee & beverages", "Snack programs", "Sustainable practices"],
+    image: serviceMicroKitchen,
   },
   {
     icon: UtensilsCrossed,
     title: "Catering",
     description: "Exquisite catering services for events of all sizes with fully customizable menus to match your vision.",
     features: ["Custom menu creation", "Dietary options", "Full service staff", "Equipment rentals", "Setup & cleanup"],
+    image: serviceCatering,
   },
   {
     icon: Sparkles,
     title: "Pop-up Catering",
     description: "Unique pop-up dining experiences that create lasting impressions and unforgettable moments.",
     features: ["Creative concepts", "Interactive stations", "Themed experiences", "Social media worthy", "Flexible locations"],
+    image: servicePopup,
   },
 ];
 
@@ -69,12 +85,12 @@ const Services = () => {
       </Helmet>
       
       {/* Hero Section */}
-      <section className="pt-32 pb-16 bg-green-100 relative overflow-hidden">
+      <section className="pt-32 pb-16 bg-muted relative overflow-hidden">
         {/* Subtle pattern overlay */}
         <div 
           className="absolute inset-0 opacity-[0.15]"
           style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--forest)) 1px, transparent 0)`,
+            backgroundImage: `radial-gradient(circle at 1px 1px, hsl(var(--primary)) 1px, transparent 0)`,
             backgroundSize: '24px 24px'
           }}
         />
@@ -85,13 +101,13 @@ const Services = () => {
             transition={{ duration: 0.6 }}
             className="max-w-3xl mx-auto text-center"
           >
-            <span className="inline-block px-4 py-2 rounded-full bg-forest/20 text-forest text-sm font-medium tracking-wide mb-6">
+            <span className="inline-block px-4 py-2 rounded-full bg-primary/20 text-primary text-sm font-medium tracking-wide mb-6">
               Our Expertise
             </span>
-            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-forest-dark mb-6">
-              Services That <span className="text-gold">Inspire</span>
+            <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6">
+              Services That <span className="text-primary">Inspire</span>
             </h1>
-            <p className="text-forest/80 text-base md:text-lg leading-relaxed px-4">
+            <p className="text-muted-foreground text-base md:text-lg leading-relaxed px-4">
               From intimate gatherings to grand corporate events, our comprehensive 
               services are designed to exceed your expectations at every touchpoint.
             </p>
@@ -102,7 +118,7 @@ const Services = () => {
       {/* Services Grid */}
       <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="space-y-12 md:space-y-16">
+          <div className="space-y-16 md:space-y-24">
             {services.map((service, index) => (
               <motion.div
                 key={service.title}
@@ -115,8 +131,8 @@ const Services = () => {
                 }`}
               >
                 <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gold/10 flex items-center justify-center mb-4 md:mb-6">
-                    <service.icon className="w-7 h-7 md:w-8 md:h-8 text-gold" />
+                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 md:mb-6">
+                    <service.icon className="w-7 h-7 md:w-8 md:h-8 text-primary" />
                   </div>
                   <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 md:mb-4">
                     {service.title}
@@ -127,27 +143,30 @@ const Services = () => {
                   <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8">
                     {service.features.map((feature) => (
                       <li key={feature} className="flex items-center gap-3">
-                        <div className="w-5 h-5 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
-                          <Check className="w-3 h-3 text-gold" />
+                        <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                          <Check className="w-3 h-3 text-primary" />
                         </div>
                         <span className="text-foreground text-sm md:text-base">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <Link to="/quote">
-                    <Button variant="elegant" size="lg" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90">
                       Get a Quote
                     </Button>
                   </Link>
                 </div>
-                <div className={`${index % 2 === 1 ? "lg:order-1" : ""} relative`}>
-                  <div className="aspect-[4/3] rounded-2xl bg-gradient-to-br from-secondary to-muted overflow-hidden relative group">
-                    <div className="absolute inset-0 bg-forest/5 group-hover:bg-forest/10 transition-colors" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <service.icon className="w-20 md:w-24 h-20 md:h-24 text-gold/20" />
-                    </div>
+                <div className={`${index % 2 === 1 ? "lg:order-1" : ""} relative group`}>
+                  <div className="aspect-[4/3] rounded-2xl overflow-hidden relative">
+                    <img 
+                      src={service.image} 
+                      alt={service.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
-                  <div className="absolute -bottom-3 md:-bottom-4 -right-3 md:-right-4 w-20 md:w-24 h-20 md:h-24 bg-gold/10 rounded-2xl -z-10" />
+                  <div className="absolute -bottom-3 md:-bottom-4 -right-3 md:-right-4 w-20 md:w-24 h-20 md:h-24 bg-primary/10 rounded-2xl -z-10" />
+                  <div className="absolute -top-3 md:-top-4 -left-3 md:-left-4 w-16 md:w-20 h-16 md:h-20 bg-purple/10 rounded-2xl -z-10" />
                 </div>
               </motion.div>
             ))}
@@ -156,7 +175,7 @@ const Services = () => {
       </section>
 
       {/* CTA */}
-      <section className="py-16 md:py-20 bg-secondary">
+      <section className="py-16 md:py-20 bg-muted">
         <div className="container mx-auto px-4 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -172,12 +191,12 @@ const Services = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/quote">
-                <Button variant="gold" size="lg" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90">
                   Request a Quote
                 </Button>
               </Link>
               <Link to="/contact">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto border-primary/50 text-foreground hover:bg-primary/10">
                   Contact Us
                 </Button>
               </Link>
