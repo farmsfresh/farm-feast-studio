@@ -75,18 +75,29 @@ export const HeroSection = () => {
           </Link>
         </motion.div>
 
-        {/* Video Indicators */}
+        {/* Metrics */}
         <motion.div initial={{
-        opacity: 0
+        opacity: 0,
+        y: 20
       }} animate={{
-        opacity: 1
+        opacity: 1,
+        y: 0
       }} transition={{
-        delay: 1.5
-      }} className="absolute bottom-32 left-1/2 -translate-x-1/2 flex gap-3">
-          {videos.map((_, index) => <button key={index} onClick={() => {
-          setCurrentVideoIndex(index);
-          setIsLoaded(false);
-        }} className={`w-2 h-2 rounded-full transition-all duration-500 ${currentVideoIndex === index ? "bg-primary w-8" : "bg-cream/40 hover:bg-cream/60"}`} aria-label={`Video ${index + 1}`} />)}
+        duration: 1,
+        delay: 1.4
+      }} className="mt-12 flex flex-wrap justify-center gap-8 md:gap-16">
+          <div className="text-center">
+            <p className="text-3xl md:text-4xl font-serif font-bold text-cream">500+</p>
+            <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Events Catered</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl md:text-4xl font-serif font-bold text-cream">15+</p>
+            <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Years Experience</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl md:text-4xl font-serif font-bold text-cream">98%</p>
+            <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Client Satisfaction</p>
+          </div>
         </motion.div>
       </div>
 
