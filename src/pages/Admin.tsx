@@ -254,6 +254,12 @@ const Admin = () => {
                   Manage Modifiers
                 </Button>
               </Link>
+              <Link to="/admin/menu-images">
+                <Button variant="outline" className="gap-2 border-gold/30 text-gold hover:bg-gold/10">
+                  <ShoppingBag className="w-4 h-4" />
+                  Menu Images
+                </Button>
+              </Link>
             </div>
           </motion.div>
         </div>
