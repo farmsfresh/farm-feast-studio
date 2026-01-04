@@ -36,7 +36,7 @@ export const HeroSection = () => {
           </motion.video>
         </AnimatePresence>
         {/* Dark elegant overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 shadow-2xl" />
       </div>
 
       {/* Centered Content - Tresla Style */}
@@ -52,20 +52,11 @@ export const HeroSection = () => {
         delay: 0.5
       }} className="mb-8">
           {/* Logo/Brand Name */}
-          <h1 className="font-serif text-5xl sm:text-6xl lg:text-8xl font-bold text-cream tracking-wider mb-4 md:text-5xl">TOP NOTCH EVENT SERVICES</h1>
+          <h1 className="font-serif text-5xl sm:text-6xl lg:text-8xl font-bold text-cream tracking-wider mb-4 md:text-5xl">TOP NOTCH EVENT AND FOOD SERVICES</h1>
           
         </motion.div>
 
-        <motion.p initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 1,
-        delay: 0.8
-      }} className="text-cream/70 text-sm sm:text-base max-w-2xl mx-auto mb-12 leading-relaxed font-bold md:text-4xl">PREMIUM WORLD CLASS FOOD AND KITCHEN SERVICES</motion.p>
+        
 
         <motion.div initial={{
         opacity: 0,
