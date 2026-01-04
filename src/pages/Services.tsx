@@ -115,58 +115,64 @@ const Services = () => {
         </div>
       </section>
 
-      {/* Services Grid */}
+      {/* Services List */}
       <section className="py-16 md:py-20 bg-background">
         <div className="container mx-auto px-4 lg:px-8">
-          <div className="space-y-16 md:space-y-24">
+          <div className="space-y-6">
             {services.map((service, index) => (
               <motion.div
                 key={service.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
+                whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.6 }}
-                className={`grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center ${
-                  index % 2 === 1 ? "lg:flex-row-reverse" : ""
-                }`}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+                className="group"
               >
-                <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                  <div className="w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 md:mb-6">
-                    <service.icon className="w-7 h-7 md:w-8 md:h-8 text-primary" />
+                <div className={`flex flex-col md:flex-row items-center gap-6 md:gap-8 p-6 md:p-8 rounded-2xl bg-muted/50 hover:bg-muted transition-all duration-300 border border-border/50 hover:border-primary/30 ${
+                  index % 2 === 1 ? "md:flex-row-reverse" : ""
+                }`}>
+                  {/* Image */}
+                  <div className="w-full md:w-72 lg:w-80 shrink-0">
+                    <div className="aspect-[4/3] rounded-xl overflow-hidden relative">
+                      <img 
+                        src={service.image} 
+                        alt={service.title}
+                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    </div>
                   </div>
-                  <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-3 md:mb-4">
-                    {service.title}
-                  </h2>
-                  <p className="text-muted-foreground text-base md:text-lg mb-6 md:mb-8 leading-relaxed">
-                    {service.description}
-                  </p>
-                  <ul className="space-y-2 md:space-y-3 mb-6 md:mb-8">
-                    {service.features.map((feature) => (
-                      <li key={feature} className="flex items-center gap-3">
-                        <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                          <Check className="w-3 h-3 text-primary" />
-                        </div>
-                        <span className="text-foreground text-sm md:text-base">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link to="/quote">
-                    <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90">
-                      Get a Quote
-                    </Button>
-                  </Link>
-                </div>
-                <div className={`${index % 2 === 1 ? "lg:order-1" : ""} relative group`}>
-                  <div className="aspect-[4/3] rounded-2xl overflow-hidden relative">
-                    <img 
-                      src={service.image} 
-                      alt={service.title}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+                  {/* Content */}
+                  <div className="flex-1 text-center md:text-left">
+                    <div className="flex items-center justify-center md:justify-start gap-3 mb-3">
+                      <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                        <service.icon className="w-5 h-5 text-primary" />
+                      </div>
+                      <h2 className="font-serif text-xl md:text-2xl lg:text-3xl font-bold text-foreground">
+                        {service.title}
+                      </h2>
+                    </div>
+                    <p className="text-muted-foreground text-sm md:text-base mb-4 leading-relaxed max-w-2xl">
+                      {service.description}
+                    </p>
+                    <div className="flex flex-wrap justify-center md:justify-start gap-2 mb-4">
+                      {service.features.slice(0, 3).map((feature) => (
+                        <span 
+                          key={feature} 
+                          className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium"
+                        >
+                          <Check className="w-3 h-3" />
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                    <Link to="/quote">
+                      <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                        Get a Quote
+                      </Button>
+                    </Link>
                   </div>
-                  <div className="absolute -bottom-3 md:-bottom-4 -right-3 md:-right-4 w-20 md:w-24 h-20 md:h-24 bg-primary/10 rounded-2xl -z-10" />
-                  <div className="absolute -top-3 md:-top-4 -left-3 md:-left-4 w-16 md:w-20 h-16 md:h-20 bg-purple/10 rounded-2xl -z-10" />
                 </div>
               </motion.div>
             ))}
