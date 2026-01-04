@@ -6,26 +6,36 @@ import heroVideo1 from "@/assets/hero-video-1.mp4";
 import heroVideo2 from "@/assets/hero-video-2.mp4";
 import heroVideo3 from "@/assets/hero-video-3.mp4";
 const videos = [heroVideo1, heroVideo2, heroVideo3];
-
-const AnimatedCounter = ({ value, suffix = "", duration = 2 }: { value: number; suffix?: string; duration?: number }) => {
+const AnimatedCounter = ({
+  value,
+  suffix = "",
+  duration = 2
+}: {
+  value: number;
+  suffix?: string;
+  duration?: number;
+}) => {
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-  const spring = useSpring(0, { duration: duration * 1000, bounce: 0 });
-  const display = useTransform(spring, (current) => Math.round(current));
+  const isInView = useInView(ref, {
+    once: true,
+    margin: "-100px"
+  });
+  const spring = useSpring(0, {
+    duration: duration * 1000,
+    bounce: 0
+  });
+  const display = useTransform(spring, current => Math.round(current));
   const [displayValue, setDisplayValue] = useState(0);
-
   useEffect(() => {
     if (isInView) {
       spring.set(value);
     }
   }, [isInView, spring, value]);
-
   useEffect(() => {
-    return display.on("change", (latest) => {
+    return display.on("change", latest => {
       setDisplayValue(latest);
     });
   }, [display]);
-
   return <span ref={ref}>{displayValue}{suffix}</span>;
 };
 export const HeroSection = () => {
@@ -74,7 +84,7 @@ export const HeroSection = () => {
         delay: 0.5
       }} className="mb-8">
           {/* Logo/Brand Name */}
-          <h1 className="font-serif text-5xl sm:text-6xl lg:text-8xl font-bold text-cream tracking-wider mb-4 md:text-2xl">TOP NOTCH EVENT AND FOOD SERVICES</h1>
+          <h1 className="font-serif text-5xl sm:text-6xl lg:text-8xl font-bold text-cream tracking-wider mb-4 md:text-3xl">TOP NOTCH EVENT AND FOOD SERVICES</h1>
           
         </motion.div>
 
