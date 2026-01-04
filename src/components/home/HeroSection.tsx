@@ -52,8 +52,8 @@ export const HeroSection = () => {
         delay: 0.5
       }} className="mb-8">
           {/* Logo/Brand Name */}
-          <h1 className="font-serif text-5xl sm:text-6xl lg:text-8xl font-bold text-cream tracking-wider mb-4 md:text-6xl">PREMIUM WORLDCLASS</h1>
-          <p className="text-cream/80 text-base sm:text-lg tracking-[0.3em] uppercase font-light md:text-3xl">EVENTS, CATERING & KITCHEN SERVICES</p>
+          <h1 className="font-serif text-5xl sm:text-6xl lg:text-8xl font-bold text-cream tracking-wider mb-4 md:text-5xl">TOP NOTCH EVENT SERVICES</h1>
+          
         </motion.div>
 
         <motion.p initial={{
