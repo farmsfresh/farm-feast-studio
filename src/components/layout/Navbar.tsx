@@ -113,13 +113,13 @@ export const Navbar = () => {
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo and Title */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <img src={logo} alt="Farms Fresh Food Catering" className="h-24 md:h-28 w-auto group-hover:scale-105 transition-transform duration-300" />
-            <div className="hidden sm:block">
-              <h1 className="font-serif text-xl md:text-2xl font-bold leading-tight text-cream">
+          <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
+            <img src={logo} alt="Farms Fresh Food Catering" className="h-16 sm:h-24 md:h-28 w-auto group-hover:scale-105 transition-transform duration-300" />
+            <div>
+              <h1 className="font-serif text-sm sm:text-xl md:text-2xl font-bold leading-tight text-cream">
                 FARMS FRESH FOOD
               </h1>
-              <span className="text-[10px] md:text-xs tracking-widest text-primary">EVENTS, CATERING AND CORPORATE KITCHEN SERVICES</span>
+              <span className="text-[8px] sm:text-[10px] md:text-xs tracking-widest text-primary leading-tight block">EVENTS, CATERING AND CORPORATE KITCHEN SERVICES</span>
             </div>
           </Link>
 
