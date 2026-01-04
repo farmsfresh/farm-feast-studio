@@ -101,7 +101,7 @@ export const HeroSection = () => {
       }} transition={{
         duration: 1,
         delay: 1.4
-      }} className="mt-8 flex flex-wrap justify-center gap-8 md:gap-16">
+      }} className="mt-8 flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-8 md:gap-16">
           <div className="text-center">
             <p className="text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={500} suffix="+" /></p>
             <p className="text-sm text-cream/60 uppercase tracking-wider mt-1">Events Catered</p>
