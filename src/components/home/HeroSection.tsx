@@ -73,20 +73,7 @@ export const HeroSection = () => {
 
       {/* Centered Content - Tresla Style */}
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 1,
-        delay: 0.5
-      }} className="mb-8">
-          {/* Logo/Brand Name */}
-          <h1 className="font-serif text-5xl sm:text-6xl lg:text-8xl font-bold text-cream tracking-wider mb-4 md:text-3xl">TOP NOTCH EVENT AND FOOD SERVICES</h1>
-          
-        </motion.div>
+        
 
         
 
