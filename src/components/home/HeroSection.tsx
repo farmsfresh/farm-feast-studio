@@ -1,163 +1,89 @@
 import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence, useInView, useSpring, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import heroVideo1 from "@/assets/hero-video-1.mp4";
 import heroVideo2 from "@/assets/hero-video-2.mp4";
-import heroVideo3 from "@/assets/hero-video-3.mp4";
-const videos = [heroVideo1, heroVideo2, heroVideo3];
-const AnimatedCounter = ({
-  value,
-  suffix = "",
-  duration = 2
-}: {
-  value: number;
-  suffix?: string;
-  duration?: number;
-}) => {
-  const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, {
-    once: true,
-    margin: "-100px"
-  });
-  const spring = useSpring(0, {
-    duration: duration * 1000,
-    bounce: 0
-  });
-  const display = useTransform(spring, current => Math.round(current));
-  const [displayValue, setDisplayValue] = useState(0);
-  useEffect(() => {
-    if (isInView) {
-      spring.set(value);
-    }
-  }, [isInView, spring, value]);
-  useEffect(() => {
-    return display.on("change", latest => {
-      setDisplayValue(latest);
-    });
-  }, [display]);
-  return <span ref={ref}>{displayValue}{suffix}</span>;
-};
+
+const videos = [heroVideo1, heroVideo2];
+
 export const HeroSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play().catch(() => {});
     }
   }, [currentVideoIndex]);
+
   const handleVideoEnd = () => {
     setCurrentVideoIndex(prev => (prev + 1) % videos.length);
     setIsLoaded(false);
   };
-  return <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+
+  return (
+    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
       {/* Video Background - Fullscreen */}
       <div className="absolute inset-0 z-0">
         <AnimatePresence mode="wait">
-          <motion.video key={currentVideoIndex} ref={videoRef} autoPlay muted playsInline onLoadedData={() => setIsLoaded(true)} onEnded={handleVideoEnd} initial={{
-          opacity: 0
-        }} animate={{
-          opacity: isLoaded ? 1 : 0
-        }} exit={{
-          opacity: 0
-        }} transition={{
-          duration: 1.5
-        }} className="w-full h-full object-cover">
+          <motion.video
+            key={currentVideoIndex}
+            ref={videoRef}
+            autoPlay
+            muted
+            playsInline
+            onLoadedData={() => setIsLoaded(true)}
+            onEnded={handleVideoEnd}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: isLoaded ? 1 : 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1.5 }}
+            className="w-full h-full object-cover"
+          >
             <source src={videos[currentVideoIndex]} type="video/mp4" />
           </motion.video>
         </AnimatePresence>
         {/* Dark elegant overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/60 shadow-xl" />
+        <div className="absolute inset-0 bg-black/40" />
       </div>
 
       {/* Centered Content - Tresla Style */}
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
         {/* Title */}
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 1,
-        delay: 1.1
-      }} className="text-center px-2">
-          <h1 className="text-2xl sm:text-4xl md:text-6xl font-serif font-bold text-cream tracking-wide leading-tight">
-            <span className="block">FARMS FRESH FOOD</span>
-            <span className="block">&amp; EVENTS</span>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.5 }}
+          className="text-center"
+        >
+          <h1 className="text-3xl sm:text-5xl md:text-7xl font-serif font-normal text-cream tracking-[0.2em] uppercase">
+            Farms Fresh Food
           </h1>
-          <p className="text-sm sm:text-lg md:text-xl text-cream/80 uppercase tracking-[0.15em] sm:tracking-[0.3em] mt-3">World Class Premium Catering</p>
-        </motion.div>
-
-        {/* Metrics */}
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 1,
-        delay: 1.4
-      }} className="mt-8 flex flex-col sm:flex-row flex-wrap justify-center gap-4 sm:gap-8 md:gap-16">
-          <div className="text-center">
-            <p className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={500} suffix="+" /></p>
-            <p className="text-xs sm:text-sm text-cream/60 uppercase tracking-wider mt-1">Events Catered</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={15} suffix="+" /></p>
-            <p className="text-xs sm:text-sm text-cream/60 uppercase tracking-wider mt-1">Years Experience</p>
-          </div>
-          <div className="text-center">
-            <p className="text-2xl sm:text-3xl md:text-4xl font-serif font-bold text-cream"><AnimatedCounter value={98} suffix="%" /></p>
-            <p className="text-xs sm:text-sm text-cream/60 uppercase tracking-wider mt-1">Client Satisfaction</p>
-          </div>
+          <p className="text-xs sm:text-sm md:text-base text-cream/80 tracking-[0.3em] mt-4 uppercase">
+            Elevated Catering, Corporate Dining, and Events — Hospitality Without Limits
+          </p>
         </motion.div>
 
         {/* Enter Button */}
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 1,
-        delay: 1.7
-      }} className="mt-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.8 }}
+          className="mt-10"
+        >
           <Link to="/order">
-            <Button variant="outline" size="lg" className="px-12 py-6 text-base tracking-widest uppercase border-cream/50 text-cream bg-transparent hover:bg-cream/10 hover:border-cream transition-all duration-500">
+            <Button
+              variant="outline"
+              size="lg"
+              className="px-16 py-4 text-sm tracking-[0.3em] uppercase border-cream/40 text-cream bg-transparent hover:bg-cream/10 hover:border-cream transition-all duration-500 rounded-none"
+            >
               Enter
             </Button>
           </Link>
         </motion.div>
       </div>
-
-      {/* Scroll Indicator */}
-      <motion.div initial={{
-      opacity: 0
-    }} animate={{
-      opacity: 1
-    }} transition={{
-      delay: 2
-    }} className="absolute bottom-8 left-1/2 -translate-x-1/2">
-        
-      </motion.div>
-
-      {/* Awards/Badges - Bottom Left like Tresla */}
-      <motion.div initial={{
-      opacity: 0,
-      x: -20
-    }} animate={{
-      opacity: 1,
-      x: 0
-    }} transition={{
-      duration: 1,
-      delay: 1.5
-    }} className="absolute bottom-8 left-8 hidden md:block">
-        
-      </motion.div>
-    </section>;
+    </section>
+  );
 };
