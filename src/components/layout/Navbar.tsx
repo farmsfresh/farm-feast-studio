@@ -92,13 +92,13 @@ export const Navbar = () => {
             <img src={logo} alt="Farms Fresh Food Catering" className="h-16 sm:h-24 md:h-28 w-auto group-hover:scale-105 transition-transform duration-300" />
             <div className="flex flex-col">
               <h1 className="font-serif text-sm sm:text-xl md:text-2xl font-bold leading-tight text-cream">FARMS FRESH EVENTS & CATERING</h1>
-              <div className="hidden md:flex items-center gap-4 mt-1">
-                <a href="tel:650-866-0520" className="flex items-center gap-1.5 text-xs transition-colors text-cream/80 hover:text-primary">
-                  <Phone className="w-3 h-3" />
+              <div className="hidden md:flex items-center gap-6 mt-1">
+                <a href="tel:650-866-0520" className="flex items-center gap-1.5 text-xs transition-colors text-cream/80 hover:text-primary whitespace-nowrap">
+                  <Phone className="w-3 h-3 flex-shrink-0" />
                   <span>650-866-0520</span>
                 </a>
                 <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-1.5 text-xs transition-colors text-cream/80 hover:text-primary">
-                  <Mail className="w-3 h-3" />
+                  <Mail className="w-3 h-3 flex-shrink-0" />
                   <span>catering@farmsfreshfood.com</span>
                 </a>
               </div>
@@ -112,8 +112,14 @@ export const Navbar = () => {
               </Link>)}
           </div>
 
-          {/* Social icons and My Account - right side */}
-          <div className="hidden lg:flex items-center gap-3">
+          {/* My Account and Social icons - right side */}
+          <div className="hidden lg:flex flex-col items-end gap-1">
+            <Link to="/account">
+              <Button variant="outline" size="sm" className="gap-2 border-primary/50 text-cream hover:bg-primary/20 hover:text-primary hover:border-primary">
+                <User className="w-4 h-4" />
+                My Account
+              </Button>
+            </Link>
             <div className="flex items-center gap-1">
               {socialLinks.map(social => (
                 <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1 rounded-full transition-all duration-300 text-cream/70 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
@@ -121,12 +127,6 @@ export const Navbar = () => {
                 </a>
               ))}
             </div>
-            <Link to="/account">
-              <Button variant="outline" size="sm" className="gap-2 border-primary/50 text-cream hover:bg-primary/20 hover:text-primary hover:border-primary">
-                <User className="w-4 h-4" />
-                My Account
-              </Button>
-            </Link>
           </div>
 
           {/* Mobile Menu Button */}
