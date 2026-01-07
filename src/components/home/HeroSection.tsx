@@ -18,11 +18,11 @@ export const HeroSection = () => {
       videoRef.current.play().catch(() => {});
     }
 
-    // Set timeout for first video to transition after 3 seconds
+    // Set timeout for first video to transition after 5 seconds
     if (currentVideoIndex === 0) {
       const timer = setTimeout(() => {
         handleVideoEnd();
-      }, 2000);
+      }, 5000);
       return () => clearTimeout(timer);
     }
   }, [currentVideoIndex]);
