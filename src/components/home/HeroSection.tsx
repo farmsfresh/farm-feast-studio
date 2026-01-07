@@ -24,7 +24,7 @@ export const HeroSection = () => {
     if (currentVideoIndex === 0) {
       const timer = setTimeout(() => {
         handleVideoEnd();
-      }, 3000);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [currentVideoIndex]);
