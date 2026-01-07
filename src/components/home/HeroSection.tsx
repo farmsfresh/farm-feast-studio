@@ -5,8 +5,9 @@ import { Button } from "@/components/ui/button";
 import heroVideo1 from "@/assets/hero-video-1.mp4";
 import heroVideo3 from "@/assets/hero-video-3.mp4";
 import heroVideo6 from "@/assets/hero-video-6.mp4";
+import heroVideo7 from "@/assets/hero-video-7.mp4";
 
-const videos = [heroVideo6, heroVideo1, heroVideo3];
+const videos = [heroVideo7, heroVideo6, heroVideo1, heroVideo3];
 
 export const HeroSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
