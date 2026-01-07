@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Play } from "lucide-react";
 import heroVideo1 from "@/assets/hero-video-1.mp4";
 import heroVideo2 from "@/assets/hero-video-2.mp4";
-import heroVideo3 from "@/assets/hero-video-3.mp4";
 import venueCorporate from "@/assets/venue-corporate.jpg";
 import venueWedding from "@/assets/venue-wedding.jpg";
 import venuePrivate from "@/assets/venue-private.jpg";
@@ -29,7 +28,7 @@ const venues = [
     id: 3,
     title: "Private Dining",
     description: "Intimate gatherings with personalized culinary experiences",
-    video: heroVideo3,
+    video: heroVideo1,
     image: venuePrivate,
   },
   {
