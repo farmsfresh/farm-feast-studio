@@ -4,10 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import heroVideo1 from "@/assets/hero-video-1.mp4";
 import heroVideo2 from "@/assets/hero-video-2.mp4";
-import heroVideo3 from "@/assets/hero-video-3.mp4";
-import heroVideo4 from "@/assets/hero-video-4.mp4";
 
-const videos = [heroVideo1, heroVideo2, heroVideo3, heroVideo4];
+const videos = [heroVideo1, heroVideo2];
 
 export const HeroSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
