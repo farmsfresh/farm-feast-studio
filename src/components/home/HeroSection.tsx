@@ -14,9 +14,18 @@ export const HeroSection = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
+  // First video plays for 3 seconds, others play full duration
   useEffect(() => {
     if (videoRef.current) {
       videoRef.current.play().catch(() => {});
+    }
+
+    // Set timeout for first video to transition after 3 seconds
+    if (currentVideoIndex === 0) {
+      const timer = setTimeout(() => {
+        handleVideoEnd();
+      }, 3000);
+      return () => clearTimeout(timer);
     }
   }, [currentVideoIndex]);
 
@@ -24,6 +33,9 @@ export const HeroSection = () => {
     setCurrentVideoIndex(prev => (prev + 1) % videos.length);
     setIsLoaded(false);
   };
+
+  // Faster transition for first video
+  const transitionDuration = currentVideoIndex === 0 ? 0.5 : 1.5;
 
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
@@ -41,7 +53,7 @@ export const HeroSection = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: isLoaded ? 1 : 0 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.5 }}
+            transition={{ duration: transitionDuration }}
             className="w-full h-full object-cover"
           >
             <source src={videos[currentVideoIndex]} type="video/mp4" />
