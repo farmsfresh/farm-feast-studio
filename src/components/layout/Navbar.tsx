@@ -92,7 +92,16 @@ export const Navbar = () => {
             <img src={logo} alt="Farms Fresh Food Catering" className="h-16 sm:h-24 md:h-28 w-auto group-hover:scale-105 transition-transform duration-300" />
             <div className="flex flex-col">
               <h1 className="font-serif text-sm sm:text-xl md:text-2xl font-bold leading-tight text-cream">FARMS FRESH EVENTS & CATERING</h1>
-              <span className="text-[8px] sm:text-[10px] md:text-xs tracking-widest text-primary leading-tight block">EVENTS, CATERING AND CORPORATE KITCHEN SERVICES</span>
+              <div className="hidden md:flex items-center gap-4 mt-1">
+                <a href="tel:650-866-0520" className="flex items-center gap-1.5 text-xs transition-colors text-cream/80 hover:text-primary">
+                  <Phone className="w-3 h-3" />
+                  <span>650-866-0520</span>
+                </a>
+                <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-1.5 text-xs transition-colors text-cream/80 hover:text-primary">
+                  <Mail className="w-3 h-3" />
+                  <span>catering@farmsfreshfood.com</span>
+                </a>
+              </div>
             </div>
           </Link>
 
@@ -103,33 +112,21 @@ export const Navbar = () => {
               </Link>)}
           </div>
 
-          {/* Contact info, social icons, and My Account - right side */}
-          <div className="hidden lg:flex flex-col items-end gap-1">
-            <div className="flex items-center gap-3">
-              <a href="tel:650-866-0520" className="flex items-center gap-1.5 text-xs transition-colors text-cream/80 hover:text-primary">
-                <Phone className="w-3 h-3" />
-                <span>650-866-0520</span>
-              </a>
-              <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-1.5 text-xs transition-colors text-cream/80 hover:text-primary">
-                <Mail className="w-3 h-3" />
-                <span>catering@farmsfreshfood.com</span>
-              </a>
+          {/* Social icons and My Account - right side */}
+          <div className="hidden lg:flex items-center gap-3">
+            <div className="flex items-center gap-1">
+              {socialLinks.map(social => (
+                <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1 rounded-full transition-all duration-300 text-cream/70 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
+                  <social.icon className="w-3.5 h-3.5" />
+                </a>
+              ))}
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1">
-                {socialLinks.map(social => (
-                  <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1 rounded-full transition-all duration-300 text-cream/70 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
-                    <social.icon className="w-3.5 h-3.5" />
-                  </a>
-                ))}
-              </div>
-              <Link to="/account">
-                <Button variant="outline" size="sm" className="gap-2 border-primary/50 text-cream hover:bg-primary/20 hover:text-primary hover:border-primary">
-                  <User className="w-4 h-4" />
-                  My Account
-                </Button>
-              </Link>
-            </div>
+            <Link to="/account">
+              <Button variant="outline" size="sm" className="gap-2 border-primary/50 text-cream hover:bg-primary/20 hover:text-primary hover:border-primary">
+                <User className="w-4 h-4" />
+                My Account
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
