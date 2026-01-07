@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight, Play } from "lucide-react";
 import heroVideo1 from "@/assets/hero-video-1.mp4";
-import heroVideo2 from "@/assets/hero-video-2.mp4";
+import heroVideo3 from "@/assets/hero-video-3.mp4";
 import venueCorporate from "@/assets/venue-corporate.jpg";
 import venueWedding from "@/assets/venue-wedding.jpg";
 import venuePrivate from "@/assets/venue-private.jpg";
@@ -21,7 +21,7 @@ const venues = [
     id: 2,
     title: "Wedding Catering",
     description: "Make your special day unforgettable with exquisite cuisine",
-    video: heroVideo2,
+    video: heroVideo3,
     image: venueWedding,
   },
   {
