@@ -84,40 +84,33 @@ export const Navbar = () => {
     duration: 0.6,
     ease: "easeOut"
   }} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-header shadow-elegant py-2" : "bg-header/95 backdrop-blur-sm py-3"}`}>
-      {/* Top bar with contact info */}
-      <div className={`hidden md:block border-b transition-colors ${isScrolled ? "border-primary/20 bg-forest-dark/50" : "border-primary/10 bg-forest-dark/30"}`}>
-        <div className="container mx-auto px-4 lg:px-8 py-2">
-          <div className="flex items-center justify-between">
-            {/* Contact Info */}
-            <div className="flex items-center gap-6 text-sm">
-              <a href="tel:650-866-0520" className="flex items-center gap-2 transition-colors text-cream/90 hover:text-primary">
-                <Phone className="w-3.5 h-3.5" />
-                <span>650-866-0520</span>
-              </a>
-              <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-2 transition-colors text-cream/90 hover:text-primary">
-                <Mail className="w-3.5 h-3.5" />
-                <span>catering@farmsfreshfood.com</span>
-              </a>
-            </div>
-            
-            {/* Social Media Icons - centered */}
-            <div className="flex items-center gap-2">
-              {socialLinks.map(social => <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full transition-all duration-300 text-cream/80 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
-                  <social.icon className="w-4 h-4" />
-                </a>)}
-            </div>
-          </div>
-        </div>
-      </div>
       
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between">
           {/* Logo and Title */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
             <img src={logo} alt="Farms Fresh Food Catering" className="h-16 sm:h-24 md:h-28 w-auto group-hover:scale-105 transition-transform duration-300" />
-            <div>
+            <div className="flex flex-col">
               <h1 className="font-serif text-sm sm:text-xl md:text-2xl font-bold leading-tight text-cream">FARMS FRESH EVENTS & CATERING</h1>
               <span className="text-[8px] sm:text-[10px] md:text-xs tracking-widest text-primary leading-tight block">EVENTS, CATERING AND CORPORATE KITCHEN SERVICES</span>
+              {/* Contact info and social icons below title - desktop only */}
+              <div className="hidden md:flex items-center gap-4 mt-1">
+                <a href="tel:650-866-0520" className="flex items-center gap-1.5 text-xs transition-colors text-cream/80 hover:text-primary">
+                  <Phone className="w-3 h-3" />
+                  <span>650-866-0520</span>
+                </a>
+                <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-1.5 text-xs transition-colors text-cream/80 hover:text-primary">
+                  <Mail className="w-3 h-3" />
+                  <span>catering@farmsfreshfood.com</span>
+                </a>
+                <div className="flex items-center gap-1 ml-2">
+                  {socialLinks.map(social => (
+                    <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1 rounded-full transition-all duration-300 text-cream/70 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
+                      <social.icon className="w-3.5 h-3.5" />
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
           </Link>
 
