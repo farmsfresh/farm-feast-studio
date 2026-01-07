@@ -35,7 +35,7 @@ export const HeroSection = () => {
   };
 
   // Faster transition for first video
-  const transitionDuration = currentVideoIndex === 0 ? 0.5 : 1.5;
+  const transitionDuration = currentVideoIndex === 0 ? 0.3 : 0.5;
 
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
