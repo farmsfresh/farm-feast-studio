@@ -102,6 +102,11 @@ export const Navbar = () => {
               </a>
             ))}
           </div>
+          <div className="h-4 w-px bg-cream/30" />
+          {/* Account */}
+          <Link to="/account" className="p-1.5 rounded-full transition-all duration-300 text-cream/80 hover:text-primary hover:bg-primary/10" aria-label="My Account">
+            <User className="w-4 h-4" />
+          </Link>
         </div>
         
         {/* Main header row */}
@@ -112,36 +117,16 @@ export const Navbar = () => {
             <h1 className="font-serif text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-cream whitespace-nowrap">FARMS FRESH EVENTS & CATERING</h1>
           </Link>
 
-          {/* Right side - Navigation, Account, Social stacked */}
-          <div className="hidden lg:flex flex-col items-end gap-1">
-            {/* Top row: Account icon, Social icons */}
-            <div className="flex items-center gap-3">
-              {/* Account */}
-              <Link to="/account" className="p-1.5 rounded-full transition-all duration-300 text-cream/80 hover:text-primary hover:bg-primary/10" aria-label="My Account">
-                <User className="w-4 h-4" />
-              </Link>
-              
-              {/* Social Icons */}
-              <div className="flex items-center gap-0.5 pl-2 border-l border-cream/20">
-                {socialLinks.map(social => (
-                  <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1 rounded-full transition-all duration-300 text-cream/60 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
-                    <social.icon className="w-3.5 h-3.5" />
-                  </a>
-                ))}
-              </div>
-            </div>
-            
-            {/* Bottom row: Navigation + CTA */}
-            <div className="flex items-center gap-1">
-              {navItems.map(item => <Link key={item.name} to={item.path} className={`px-2.5 py-1.5 text-sm font-medium transition-all duration-300 rounded-md ${location.pathname === item.path ? "text-primary bg-primary/15" : "text-cream/90 hover:text-primary hover:bg-primary/10"}`}>
-                  {item.name}
-                </Link>)}
-              <Link to="/quote" className="ml-2">
-                <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
-                  Get a Quote
-                </Button>
-              </Link>
-            </div>
+          {/* Right side - Navigation + CTA */}
+          <div className="hidden lg:flex items-center gap-1">
+            {navItems.map(item => <Link key={item.name} to={item.path} className={`px-2.5 py-1.5 text-sm font-medium transition-all duration-300 rounded-md ${location.pathname === item.path ? "text-primary bg-primary/15" : "text-cream/90 hover:text-primary hover:bg-primary/10"}`}>
+                {item.name}
+              </Link>)}
+            <Link to="/quote" className="ml-2">
+              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+                Get a Quote
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
