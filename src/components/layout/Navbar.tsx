@@ -38,10 +38,7 @@ const navItems = [{
   name: "Blog",
   path: "/blog"
 }, {
-  name: "Get a Quote",
-  path: "/quote"
-}, {
-  name: "Contact Us",
+  name: "Contact",
   path: "/contact"
 }];
 const socialLinks = [{
@@ -112,18 +109,25 @@ export const Navbar = () => {
               </Link>)}
           </div>
 
-          {/* My Account and Social icons - right side */}
-          <div className="hidden lg:flex flex-col items-end gap-1">
-            <Link to="/account">
-              <Button variant="outline" size="sm" className="gap-2 border-primary/50 text-cream hover:bg-primary/20 hover:text-primary hover:border-primary">
-                <User className="w-4 h-4" />
-                My Account
+          {/* Right side - CTA, Account, Social */}
+          <div className="hidden lg:flex items-center gap-4">
+            {/* Get a Quote CTA */}
+            <Link to="/quote">
+              <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 font-medium">
+                Get a Quote
               </Button>
             </Link>
-            <div className="flex items-center gap-1">
+            
+            {/* Account */}
+            <Link to="/account" className="p-2 rounded-full transition-all duration-300 text-cream/80 hover:text-primary hover:bg-primary/10" aria-label="My Account">
+              <User className="w-5 h-5" />
+            </Link>
+            
+            {/* Social Icons */}
+            <div className="flex items-center gap-1 pl-2 border-l border-cream/20">
               {socialLinks.map(social => (
-                <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1 rounded-full transition-all duration-300 text-cream/70 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
-                  <social.icon className="w-3.5 h-3.5" />
+                <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1.5 rounded-full transition-all duration-300 text-cream/60 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
+                  <social.icon className="w-4 h-4" />
                 </a>
               ))}
             </div>
