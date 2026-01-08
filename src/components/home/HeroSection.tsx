@@ -7,7 +7,7 @@ import heroVideo6 from "@/assets/hero-video-6.mp4";
 import heroVideo7 from "@/assets/hero-video-7.mp4";
 import heroVideoCorporate from "@/assets/hero-video-corporate-salads.mp4";
 
-const videos = [heroVideo7, heroVideo6, heroVideo3, heroVideoCorporate];
+const videos = [heroVideoCorporate, heroVideo6, heroVideo3, heroVideo7];
 
 export const HeroSection = () => {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
