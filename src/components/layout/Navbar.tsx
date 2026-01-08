@@ -91,13 +91,14 @@ export const Navbar = () => {
           </Link>
 
           {/* Center - Contact info */}
-          <div className="hidden lg:flex items-center gap-6 text-xs">
-            <a href="tel:650-866-0520" className="flex items-center gap-1.5 transition-colors text-cream/80 hover:text-primary whitespace-nowrap">
-              <Phone className="w-3 h-3 flex-shrink-0" />
+          <div className="hidden lg:flex items-center gap-8 text-sm">
+            <a href="tel:650-866-0520" className="flex items-center gap-2 transition-colors text-cream hover:text-primary whitespace-nowrap font-medium">
+              <Phone className="w-4 h-4 flex-shrink-0" />
               <span>650-866-0520</span>
             </a>
-            <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-1.5 transition-colors text-cream/80 hover:text-primary">
-              <Mail className="w-3 h-3 flex-shrink-0" />
+            <div className="h-5 w-px bg-cream/30" />
+            <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-2 transition-colors text-cream hover:text-primary font-medium">
+              <Mail className="w-4 h-4 flex-shrink-0" />
               <span>catering@farmsfreshfood.com</span>
             </a>
           </div>
