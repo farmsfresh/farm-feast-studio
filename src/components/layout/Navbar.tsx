@@ -83,25 +83,26 @@ export const Navbar = () => {
   }} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-header shadow-elegant py-2" : "bg-header/95 backdrop-blur-sm py-3"}`}>
       
       <div className="container mx-auto px-4 lg:px-8">
+        {/* Top row - Contact info centered */}
+        <div className="hidden lg:flex justify-center items-center gap-8 text-sm py-1 border-b border-cream/10">
+          <a href="tel:650-866-0520" className="flex items-center gap-2 transition-colors text-cream hover:text-primary whitespace-nowrap font-medium">
+            <Phone className="w-4 h-4 flex-shrink-0" />
+            <span>650-866-0520</span>
+          </a>
+          <div className="h-4 w-px bg-cream/30" />
+          <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-2 transition-colors text-cream hover:text-primary font-medium">
+            <Mail className="w-4 h-4 flex-shrink-0" />
+            <span>catering@farmsfreshfood.com</span>
+          </a>
+        </div>
+        
+        {/* Main header row */}
         <div className="flex items-center justify-between">
           {/* Logo and Title */}
           <Link to="/" className="flex items-center gap-2 sm:gap-3 group">
             <img src={logo} alt="Farms Fresh Food Catering" className="h-14 sm:h-20 md:h-24 w-auto group-hover:scale-105 transition-transform duration-300" />
             <h1 className="font-serif text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-cream whitespace-nowrap">FARMS FRESH EVENTS & CATERING</h1>
           </Link>
-
-          {/* Center - Contact info */}
-          <div className="hidden lg:flex items-center gap-8 text-sm">
-            <a href="tel:650-866-0520" className="flex items-center gap-2 transition-colors text-cream hover:text-primary whitespace-nowrap font-medium">
-              <Phone className="w-4 h-4 flex-shrink-0" />
-              <span>650-866-0520</span>
-            </a>
-            <div className="h-5 w-px bg-cream/30" />
-            <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-2 transition-colors text-cream hover:text-primary font-medium">
-              <Mail className="w-4 h-4 flex-shrink-0" />
-              <span>catering@farmsfreshfood.com</span>
-            </a>
-          </div>
 
           {/* Right side - Navigation, Account, Social stacked */}
           <div className="hidden lg:flex flex-col items-end gap-1">
