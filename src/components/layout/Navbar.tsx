@@ -83,8 +83,8 @@ export const Navbar = () => {
   }} className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${isScrolled ? "bg-header shadow-elegant py-2" : "bg-header/95 backdrop-blur-sm py-3"}`}>
       
       <div className="container mx-auto px-4 lg:px-8">
-        {/* Top row - Contact info centered */}
-        <div className="hidden lg:flex justify-center items-center gap-8 text-sm py-1 border-b border-cream/10">
+        {/* Top row - Contact info and social icons centered */}
+        <div className="hidden lg:flex justify-center items-center gap-8 text-sm py-1.5 border-b border-cream/10">
           <a href="tel:650-866-0520" className="flex items-center gap-2 transition-colors text-cream hover:text-primary whitespace-nowrap font-medium">
             <Phone className="w-4 h-4 flex-shrink-0" />
             <span>650-866-0520</span>
@@ -94,6 +94,14 @@ export const Navbar = () => {
             <Mail className="w-4 h-4 flex-shrink-0" />
             <span>catering@farmsfreshfood.com</span>
           </a>
+          <div className="h-4 w-px bg-cream/30" />
+          <div className="flex items-center gap-1">
+            {socialLinks.map(social => (
+              <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="p-1 rounded-full transition-all duration-300 text-cream/70 hover:text-primary hover:bg-primary/10" aria-label={social.label}>
+                <social.icon className="w-4 h-4" />
+              </a>
+            ))}
+          </div>
         </div>
         
         {/* Main header row */}
