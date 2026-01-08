@@ -90,22 +90,22 @@ export const Navbar = () => {
             <h1 className="font-serif text-sm sm:text-lg md:text-xl lg:text-2xl font-bold text-cream whitespace-nowrap">FARMS FRESH EVENTS & CATERING</h1>
           </Link>
 
+          {/* Center - Contact info */}
+          <div className="hidden lg:flex items-center gap-6 text-xs">
+            <a href="tel:650-866-0520" className="flex items-center gap-1.5 transition-colors text-cream/80 hover:text-primary whitespace-nowrap">
+              <Phone className="w-3 h-3 flex-shrink-0" />
+              <span>650-866-0520</span>
+            </a>
+            <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-1.5 transition-colors text-cream/80 hover:text-primary">
+              <Mail className="w-3 h-3 flex-shrink-0" />
+              <span>catering@farmsfreshfood.com</span>
+            </a>
+          </div>
+
           {/* Right side - Navigation, Account, Social stacked */}
           <div className="hidden lg:flex flex-col items-end gap-1">
             {/* Top row: Account icon, Social icons */}
             <div className="flex items-center gap-3">
-              {/* Contact info */}
-              <div className="flex items-center gap-4 text-xs">
-                <a href="tel:650-866-0520" className="flex items-center gap-1.5 transition-colors text-cream/80 hover:text-primary whitespace-nowrap">
-                  <Phone className="w-3 h-3 flex-shrink-0" />
-                  <span>650-866-0520</span>
-                </a>
-                <a href="mailto:catering@farmsfreshfood.com" className="flex items-center gap-1.5 transition-colors text-cream/80 hover:text-primary">
-                  <Mail className="w-3 h-3 flex-shrink-0" />
-                  <span>catering@farmsfreshfood.com</span>
-                </a>
-              </div>
-              
               {/* Account */}
               <Link to="/account" className="p-1.5 rounded-full transition-all duration-300 text-cream/80 hover:text-primary hover:bg-primary/10" aria-label="My Account">
                 <User className="w-4 h-4" />
