@@ -41,21 +41,19 @@ const venues = [
 ];
 
 const VenueCard = ({ venue, index }: { venue: typeof venues[0]; index: number }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
+  const handleClick = () => {
     if (videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
+      if (isPlaying) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+        setIsPlaying(false);
+      } else {
+        videoRef.current.play().catch(() => {});
+        setIsPlaying(true);
+      }
     }
   };
 
@@ -65,8 +63,7 @@ const VenueCard = ({ venue, index }: { venue: typeof venues[0]; index: number })
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.15 }}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onClick={handleClick}
       className="group relative aspect-[4/5] overflow-hidden rounded-lg cursor-pointer"
     >
       {/* Background Image */}
@@ -74,18 +71,18 @@ const VenueCard = ({ venue, index }: { venue: typeof venues[0]; index: number })
         src={venue.image}
         alt={venue.title}
         className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ${
-          isHovered ? "opacity-0 scale-110" : "opacity-100 scale-100"
+          isPlaying ? "opacity-0 scale-110" : "opacity-100 scale-100"
         }`}
       />
 
-      {/* Video - plays on hover */}
+      {/* Video - plays on click */}
       <video
         ref={videoRef}
         muted
         loop
         playsInline
         className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
-          isHovered ? "opacity-100" : "opacity-0"
+          isPlaying ? "opacity-100" : "opacity-0"
         }`}
       >
         <source src={venue.video} type="video/mp4" />
@@ -97,7 +94,7 @@ const VenueCard = ({ venue, index }: { venue: typeof venues[0]; index: number })
       {/* Play indicator */}
       <div
         className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-500 ${
-          isHovered ? "opacity-0 scale-75" : "opacity-100 scale-100"
+          isPlaying ? "opacity-0 scale-75" : "opacity-100 scale-100"
         }`}
       >
         <div className="w-16 h-16 rounded-full border-2 border-cream/50 flex items-center justify-center backdrop-blur-sm bg-black/20">
@@ -109,7 +106,7 @@ const VenueCard = ({ venue, index }: { venue: typeof venues[0]; index: number })
       <div className="absolute bottom-0 left-0 right-0 p-6">
         <motion.div
           initial={false}
-          animate={{ y: isHovered ? 0 : 10 }}
+          animate={{ y: isPlaying ? 0 : 10 }}
           transition={{ duration: 0.3 }}
         >
           <h3 className="font-serif text-2xl md:text-3xl font-bold text-cream mb-2">
@@ -117,26 +114,18 @@ const VenueCard = ({ venue, index }: { venue: typeof venues[0]; index: number })
           </h3>
           <p
             className={`text-cream/70 text-sm mb-4 transition-all duration-500 ${
-              isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+              isPlaying ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             }`}
           >
             {venue.description}
           </p>
-          <div
-            className={`flex items-center gap-2 text-primary text-sm font-medium transition-all duration-500 ${
-              isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
-            <span>Explore</span>
-            <ArrowRight className="w-4 h-4" />
-          </div>
         </motion.div>
       </div>
 
-      {/* Purple accent glow on hover */}
+      {/* Purple accent glow when playing */}
       <div
         className={`absolute inset-0 pointer-events-none transition-opacity duration-500 ${
-          isHovered ? "opacity-100" : "opacity-0"
+          isPlaying ? "opacity-100" : "opacity-0"
         }`}
         style={{
           background:
@@ -173,9 +162,7 @@ export const VenueShowcase = () => {
         {/* Venue Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {venues.map((venue, index) => (
-            <Link to="/services" key={venue.id}>
-              <VenueCard venue={venue} index={index} />
-            </Link>
+            <VenueCard key={venue.id} venue={venue} index={index} />
           ))}
         </div>
 
