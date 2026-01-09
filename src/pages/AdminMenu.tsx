@@ -1231,14 +1231,14 @@ const AdminMenu = () => {
             <div>
               <Label htmlFor="category-parent">Parent Category</Label>
               <Select
-                value={categoryForm.parent_category_id}
-                onValueChange={(value) => setCategoryForm((f) => ({ ...f, parent_category_id: value }))}
+                value={categoryForm.parent_category_id || "none"}
+                onValueChange={(value) => setCategoryForm((f) => ({ ...f, parent_category_id: value === "none" ? "" : value }))}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="None (top-level)" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="">None (top-level)</SelectItem>
+                  <SelectItem value="none">None (top-level)</SelectItem>
                   {getParentCategories()
                     .filter((c) => c.id !== editingCategory?.id)
                     .map((cat) => (
