@@ -45,9 +45,7 @@ export const ServicesPreview = () => {
       }} transition={{
         duration: 0.6
       }} className="text-center mb-16">
-          <span className="text-gold text-sm font-medium tracking-widest uppercase mb-4 block">
-            What We Offer
-          </span>
+          
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-6 text-primary-foreground">
             Our Services
           </h2>
