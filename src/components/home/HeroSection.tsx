@@ -37,7 +37,7 @@ export const HeroSection = () => {
   };
 
   return (
-    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+    <section className="relative h-[85vh] w-full flex items-center justify-center overflow-hidden">
       {/* Video Background - All videos stacked, opacity controls visibility */}
       <div className="absolute inset-0 z-0">
         {videos.map((video, index) => (
