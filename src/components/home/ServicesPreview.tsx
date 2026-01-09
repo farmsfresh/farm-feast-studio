@@ -32,7 +32,7 @@ const services = [{
   description: "Unique pop-up dining experiences that create lasting impressions."
 }];
 export const ServicesPreview = () => {
-  return <section className="pt-12 pb-24 bg-secondary">
+  return <section className="pt-6 pb-24 bg-secondary">
       <div className="container mx-auto px-4 lg:px-8">
         <motion.div initial={{
         opacity: 0,
@@ -67,7 +67,7 @@ export const ServicesPreview = () => {
         }} transition={{
           duration: 0.5,
           delay: index * 0.1
-        }} className="group bg-card rounded-xl p-6 shadow-sm hover:shadow-elegant transition-all duration-300 border border-border hover:border-gold/30">
+        }} className="group bg-card rounded-xl p-6 shadow-sm hover:shadow-elegant hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 border border-border hover:border-gold/50">
               <div className="w-14 h-14 rounded-xl bg-gold/10 flex items-center justify-center mb-5 group-hover:bg-gold/20 transition-colors">
                 <service.icon className="w-7 h-7 text-gold" />
               </div>
