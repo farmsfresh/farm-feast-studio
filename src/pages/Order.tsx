@@ -48,8 +48,10 @@ const Order = () => {
       } = await supabase.from("menu_items").select("*").order("display_order");
       if (categoriesData) {
         setCategories(categoriesData);
-        if (categoriesData.length > 0) {
-          setActiveCategory(categoriesData[0].id);
+        // Set first parent category (not subcategory) as active
+        const parentCats = categoriesData.filter(c => !c.parent_category_id);
+        if (parentCats.length > 0) {
+          setActiveCategory(parentCats[0].id);
         }
       }
       if (itemsData) {
