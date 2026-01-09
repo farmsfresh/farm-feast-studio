@@ -54,7 +54,11 @@ import {
   ImageIcon,
   Check,
   X,
+  Eye,
+  EyeOff,
+  FolderInput,
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 
@@ -89,9 +93,15 @@ const AdminMenu = () => {
   const [itemDialogOpen, setItemDialogOpen] = useState(false);
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [bulkDeleteDialogOpen, setBulkDeleteDialogOpen] = useState(false);
+  const [bulkCategoryDialogOpen, setBulkCategoryDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<MenuItem | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ type: "item" | "category"; id: string; name: string } | null>(null);
+
+  // Bulk selection states
+  const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
+  const [bulkCategoryId, setBulkCategoryId] = useState<string>("");
 
   // Form states
   const [itemForm, setItemForm] = useState({
@@ -339,6 +349,89 @@ const AdminMenu = () => {
     return matchesSearch && matchesCategory;
   });
 
+  // Bulk selection handlers
+  const toggleSelectItem = (id: string) => {
+    setSelectedItems((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) {
+        next.delete(id);
+      } else {
+        next.add(id);
+      }
+      return next;
+    });
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedItems.size === filteredItems.length) {
+      setSelectedItems(new Set());
+    } else {
+      setSelectedItems(new Set(filteredItems.map((i) => i.id)));
+    }
+  };
+
+  const clearSelection = () => {
+    setSelectedItems(new Set());
+  };
+
+  // Bulk actions
+  const bulkToggleAvailability = async (makeAvailable: boolean) => {
+    const ids = Array.from(selectedItems);
+    const { error } = await supabase
+      .from("menu_items")
+      .update({ is_available: makeAvailable })
+      .in("id", ids);
+
+    if (error) {
+      toast({ title: "Error", description: "Failed to update items", variant: "destructive" });
+    } else {
+      toast({ title: "Success", description: `${ids.length} items updated` });
+      setMenuItems((prev) =>
+        prev.map((i) => (selectedItems.has(i.id) ? { ...i, is_available: makeAvailable } : i))
+      );
+      clearSelection();
+    }
+  };
+
+  const bulkDelete = async () => {
+    const ids = Array.from(selectedItems);
+    const { error } = await supabase.from("menu_items").delete().in("id", ids);
+
+    if (error) {
+      toast({ title: "Error", description: "Failed to delete items", variant: "destructive" });
+    } else {
+      toast({ title: "Success", description: `${ids.length} items deleted` });
+      fetchData();
+      clearSelection();
+    }
+    setBulkDeleteDialogOpen(false);
+  };
+
+  const bulkChangeCategory = async () => {
+    if (!bulkCategoryId) {
+      toast({ title: "Error", description: "Please select a category", variant: "destructive" });
+      return;
+    }
+
+    const ids = Array.from(selectedItems);
+    const { error } = await supabase
+      .from("menu_items")
+      .update({ category_id: bulkCategoryId })
+      .in("id", ids);
+
+    if (error) {
+      toast({ title: "Error", description: "Failed to update items", variant: "destructive" });
+    } else {
+      toast({ title: "Success", description: `${ids.length} items moved to ${getCategoryName(bulkCategoryId)}` });
+      setMenuItems((prev) =>
+        prev.map((i) => (selectedItems.has(i.id) ? { ...i, category_id: bulkCategoryId } : i))
+      );
+      clearSelection();
+    }
+    setBulkCategoryDialogOpen(false);
+    setBulkCategoryId("");
+  };
+
   // Stats
   const totalItems = menuItems.length;
   const availableItems = menuItems.filter((i) => i.is_available).length;
@@ -577,11 +670,65 @@ const AdminMenu = () => {
 
           {/* Menu Items Section */}
           <div>
-            <h2 className="text-xl font-semibold text-foreground mb-4">Menu Items</h2>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-foreground">Menu Items</h2>
+              {selectedItems.size > 0 && (
+                <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-4 py-2">
+                  <span className="text-sm font-medium">{selectedItems.size} selected</span>
+                  <div className="h-4 w-px bg-border" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => bulkToggleAvailability(true)}
+                    className="gap-1 text-green-600 hover:text-green-700"
+                  >
+                    <Eye className="w-4 h-4" />
+                    Enable
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => bulkToggleAvailability(false)}
+                    className="gap-1 text-yellow-600 hover:text-yellow-700"
+                  >
+                    <EyeOff className="w-4 h-4" />
+                    Disable
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setBulkCategoryDialogOpen(true)}
+                    className="gap-1"
+                  >
+                    <FolderInput className="w-4 h-4" />
+                    Move
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setBulkDeleteDialogOpen(true)}
+                    className="gap-1 text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Delete
+                  </Button>
+                  <div className="h-4 w-px bg-border" />
+                  <Button variant="ghost" size="sm" onClick={clearSelection}>
+                    <X className="w-4 h-4" />
+                  </Button>
+                </div>
+              )}
+            </div>
             <div className="bg-card rounded-xl border border-border overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">
+                      <Checkbox
+                        checked={filteredItems.length > 0 && selectedItems.size === filteredItems.length}
+                        onCheckedChange={toggleSelectAll}
+                      />
+                    </TableHead>
                     <TableHead>Image</TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Category</TableHead>
@@ -594,14 +741,20 @@ const AdminMenu = () => {
                 <TableBody>
                   {filteredItems.length === 0 ? (
                     <TableRow>
-                      <TableCell colSpan={7} className="text-center py-8">
+                      <TableCell colSpan={8} className="text-center py-8">
                         <UtensilsCrossed className="w-10 h-10 mx-auto text-muted-foreground mb-2" />
                         <p className="text-muted-foreground">No menu items found</p>
                       </TableCell>
                     </TableRow>
                   ) : (
                     filteredItems.map((item) => (
-                      <TableRow key={item.id}>
+                      <TableRow key={item.id} data-state={selectedItems.has(item.id) ? "selected" : undefined}>
+                        <TableCell>
+                          <Checkbox
+                            checked={selectedItems.has(item.id)}
+                            onCheckedChange={() => toggleSelectItem(item.id)}
+                          />
+                        </TableCell>
                         <TableCell>
                           {item.image_url ? (
                             <img
@@ -640,14 +793,14 @@ const AdminMenu = () => {
                           <div className="flex justify-end gap-2">
                             <Button
                               variant="ghost"
-                              size="sm"
+                              size="icon"
                               onClick={() => openItemDialog(item)}
                             >
                               <Pencil className="w-4 h-4" />
                             </Button>
                             <Button
                               variant="ghost"
-                              size="sm"
+                              size="icon"
                               onClick={() => confirmDelete("item", item.id, item.name)}
                               className="text-destructive hover:text-destructive"
                             >
@@ -835,6 +988,56 @@ const AdminMenu = () => {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Bulk Delete Confirmation */}
+      <AlertDialog open={bulkDeleteDialogOpen} onOpenChange={setBulkDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete {selectedItems.size} items?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete these {selectedItems.size} menu items? This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={bulkDelete} className="bg-destructive text-destructive-foreground">
+              Delete All
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Bulk Category Change Dialog */}
+      <Dialog open={bulkCategoryDialogOpen} onOpenChange={setBulkCategoryDialogOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Move {selectedItems.size} items to category</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Label htmlFor="bulk-category">Select Category</Label>
+            <Select value={bulkCategoryId} onValueChange={setBulkCategoryId}>
+              <SelectTrigger className="mt-2">
+                <SelectValue placeholder="Choose a category" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setBulkCategoryDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={bulkChangeCategory} className="bg-gold text-forest hover:bg-gold/90">
+              Move Items
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
