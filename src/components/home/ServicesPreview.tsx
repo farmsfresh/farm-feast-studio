@@ -4,12 +4,8 @@ import { Button } from "@/components/ui/button";
 import { CalendarCheck, Users, ChefHat, BedDouble, Coffee, UtensilsCrossed, Sparkles, ArrowRight } from "lucide-react";
 const services = [{
   icon: CalendarCheck,
-  title: "Event Planning",
-  description: "Full-service event planning from concept to execution, tailored to your vision."
-}, {
-  icon: Users,
-  title: "Event Management",
-  description: "Professional coordination ensuring flawless execution of your special occasions."
+  title: "Event Planning & Management",
+  description: "Full-service event planning and professional coordination from concept to flawless execution."
 }, {
   icon: ChefHat,
   title: "On-site Culinary Management",
