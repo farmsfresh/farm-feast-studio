@@ -44,12 +44,12 @@ export const ServicesPreview = () => {
         once: true
       }} transition={{
         duration: 0.6
-      }} className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-16">
+      }} className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-16 text-center md:text-left">
           <div>
             <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-3 text-primary-foreground">
               Our Services
             </h2>
-            <p className="max-w-2xl text-purple-50 text-justify text-2xl">From intimate gatherings to grand corporate events, we produce stunning events and deliver exceptional events culinary experiences customized for you needs.</p>
+            <p className="max-w-2xl text-purple-50 text-2xl">From intimate gatherings to grand corporate events, we produce stunning events and deliver exceptional events culinary experiences customized for you needs.</p>
           </div>
           <Link to="/services" className="shrink-0">
             <Button variant="elegant" size="lg" className="gap-2">
