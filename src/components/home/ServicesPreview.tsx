@@ -17,7 +17,7 @@ const services = [{
 }, {
   icon: BedDouble,
   title: "Boxed Meals",
-  description: "Premium in-room dining experiences for hotels and hospitality venues."
+  description: "Healthy lunch box service to make your team happy and productive."
 }, {
   icon: Coffee,
   title: "Micro Kitchens",
