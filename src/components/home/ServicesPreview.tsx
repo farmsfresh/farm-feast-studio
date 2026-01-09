@@ -44,12 +44,19 @@ export const ServicesPreview = () => {
         once: true
       }} transition={{
         duration: 0.6
-      }} className="text-center mb-16">
-          
-          <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-3 text-primary-foreground">
-            Our Services
-          </h2>
-          <p className="max-w-2xl mx-auto text-purple-50 text-justify text-2xl">From intimate gatherings to grand corporate events, we produce stunning events and deliver exceptional events culinary experiences customized for you needs.</p>
+      }} className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-16">
+          <div>
+            <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-3 text-primary-foreground">
+              Our Services
+            </h2>
+            <p className="max-w-2xl text-purple-50 text-justify text-2xl">From intimate gatherings to grand corporate events, we produce stunning events and deliver exceptional events culinary experiences customized for you needs.</p>
+          </div>
+          <Link to="/services" className="shrink-0">
+            <Button variant="elegant" size="lg" className="gap-2">
+              Explore All Services
+              <ArrowRight className="w-4 h-4" />
+            </Button>
+          </Link>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -76,26 +83,6 @@ export const ServicesPreview = () => {
               </p>
             </motion.div>)}
         </div>
-
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} whileInView={{
-        opacity: 1,
-        y: 0
-      }} viewport={{
-        once: true
-      }} transition={{
-        duration: 0.6,
-        delay: 0.4
-      }} className="text-center mt-12">
-          <Link to="/services">
-            <Button variant="elegant" size="lg" className="gap-2">
-              Explore All Services
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
-        </motion.div>
       </div>
     </section>;
 };
