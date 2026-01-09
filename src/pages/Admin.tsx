@@ -34,6 +34,7 @@ import {
   XCircle,
   TruckIcon,
   Users,
+  UtensilsCrossed,
 } from "lucide-react";
 
 interface Order {
@@ -258,6 +259,12 @@ const Admin = () => {
                 <Button variant="outline" className="gap-2 border-gold/30 text-gold hover:bg-gold/10">
                   <ShoppingBag className="w-4 h-4" />
                   Menu Images
+                </Button>
+              </Link>
+              <Link to="/admin/menu">
+                <Button variant="outline" className="gap-2 border-gold/30 text-gold hover:bg-gold/10">
+                  <UtensilsCrossed className="w-4 h-4" />
+                  Manage Menu
                 </Button>
               </Link>
             </div>

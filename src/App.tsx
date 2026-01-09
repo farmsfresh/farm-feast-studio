@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import Order from "./pages/Order";
+import AdminMenu from "./pages/AdminMenu";
 import Cart from "./pages/Cart";
 import Quote from "./pages/Quote";
 import Contact from "./pages/Contact";
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/admin/visitors" element={<AdminVisitors />} />
             <Route path="/admin/modifiers" element={<AdminModifiers />} />
             <Route path="/admin/menu-images" element={<AdminMenuImages />} />
+            <Route path="/admin/menu" element={<AdminMenu />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
