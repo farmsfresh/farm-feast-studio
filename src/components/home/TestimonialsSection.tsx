@@ -1,5 +1,12 @@
 import { motion } from "framer-motion";
 import { Star, Quote } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const testimonials = [
   {
@@ -23,17 +30,32 @@ const testimonials = [
     content: "We use them for all our executive lunches and client dinners. Consistently excellent quality and professional service every single time.",
     rating: 5,
   },
+  {
+    id: 4,
+    name: "Amanda Foster",
+    role: "Private Event Host",
+    content: "The attention to dietary restrictions was impressive. They made sure every guest felt included without compromising on taste or presentation.",
+    rating: 5,
+  },
+  {
+    id: 5,
+    name: "David Thornton",
+    role: "VP of Operations, Global Finance",
+    content: "From the initial consultation to the final course, the experience was seamless. Our clients were thoroughly impressed with the quality.",
+    rating: 5,
+  },
+  {
+    id: 6,
+    name: "Rachel & Tom Williams",
+    role: "Anniversary Celebration",
+    content: "They created a custom menu that perfectly captured our love story. The flavors, presentation, and service exceeded all expectations.",
+    rating: 5,
+  },
 ];
 
-const TestimonialCard = ({ testimonial, index }: { testimonial: typeof testimonials[0]; index: number }) => {
+const TestimonialCard = ({ testimonial }: { testimonial: typeof testimonials[0] }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.15 }}
-      className="bg-card rounded-xl p-8 shadow-sm border border-border hover:border-gold/30 hover:shadow-elegant transition-all duration-300 relative"
-    >
+    <div className="bg-card rounded-xl p-8 shadow-sm border border-border hover:border-gold/30 hover:shadow-elegant transition-all duration-300 relative h-full">
       {/* Quote Icon */}
       <div className="absolute top-6 right-6 text-gold/20">
         <Quote className="w-10 h-10" />
@@ -56,7 +78,7 @@ const TestimonialCard = ({ testimonial, index }: { testimonial: typeof testimoni
         <p className="font-semibold text-foreground">{testimonial.name}</p>
         <p className="text-sm text-muted-foreground">{testimonial.role}</p>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -83,12 +105,33 @@ export const TestimonialsSection = () => {
           </p>
         </motion.div>
 
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <TestimonialCard key={testimonial.id} testimonial={testimonial} index={index} />
-          ))}
-        </div>
+        {/* Testimonials Carousel */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4">
+              {testimonials.map((testimonial) => (
+                <CarouselItem key={testimonial.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                  <TestimonialCard testimonial={testimonial} />
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <div className="flex justify-center gap-4 mt-8">
+              <CarouselPrevious className="static translate-y-0 bg-card border-border hover:bg-gold/10 hover:border-gold/30" />
+              <CarouselNext className="static translate-y-0 bg-card border-border hover:bg-gold/10 hover:border-gold/30" />
+            </div>
+          </Carousel>
+        </motion.div>
       </div>
     </section>
   );
