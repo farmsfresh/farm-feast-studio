@@ -58,7 +58,7 @@ export const HeroSection = () => {
       </div>
 
       {/* Centered Content - Tresla Style */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 pt-48">
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 pt-72">
         {/* Title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
