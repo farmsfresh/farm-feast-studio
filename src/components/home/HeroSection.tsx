@@ -87,7 +87,7 @@ export const HeroSection = () => {
               size="lg"
               className="px-16 py-4 text-sm tracking-[0.3em] uppercase border-cream/40 text-cream bg-transparent hover:bg-cream/10 hover:border-cream transition-all duration-500 rounded-none"
             >
-              Enter
+              Order Online
             </Button>
           </Link>
         </motion.div>
