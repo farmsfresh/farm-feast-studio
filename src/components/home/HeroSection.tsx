@@ -74,7 +74,7 @@ export const HeroSection = () => {
           </p>
         </motion.div>
 
-        {/* Enter Button */}
+        {/* Order Online Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -88,6 +88,24 @@ export const HeroSection = () => {
               className="px-16 py-4 text-sm tracking-[0.3em] uppercase border-cream/40 text-cream bg-transparent hover:bg-cream/10 hover:border-cream transition-all duration-500 rounded-none"
             >
               Order Online
+            </Button>
+          </Link>
+        </motion.div>
+
+        {/* CTA Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.1 }}
+          className="mt-8 text-center"
+        >
+          <h2 className="font-serif text-xl md:text-2xl font-bold text-cream mb-4">
+            Ready to Create Something
+            <span className="text-gold ml-2">Extraordinary?</span>
+          </h2>
+          <Link to="/quote">
+            <Button variant="gold" size="lg">
+              Get a Free Quote
             </Button>
           </Link>
         </motion.div>
