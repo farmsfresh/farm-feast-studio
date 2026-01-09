@@ -704,23 +704,74 @@ const AdminMenu = () => {
     
     if (!over || active.id === over.id) return;
 
-    const oldIndex = categories.findIndex((c) => c.id === active.id);
-    const newIndex = categories.findIndex((c) => c.id === over.id);
+    const activeCategory = categories.find((c) => c.id === active.id);
+    const overCategory = categories.find((c) => c.id === over.id);
+    
+    if (!activeCategory || !overCategory) return;
 
-    const reordered = arrayMove(categories, oldIndex, newIndex);
-    setCategories(reordered);
+    // Subcategories can only be reordered within their parent group
+    if (activeCategory.parent_category_id !== overCategory.parent_category_id) {
+      // If dragging a subcategory onto a parent, check if it's the same parent
+      if (activeCategory.parent_category_id && !overCategory.parent_category_id) {
+        // Allow dropping on parent only if it's the active item's parent
+        if (overCategory.id !== activeCategory.parent_category_id) {
+          toast({ 
+            title: "Invalid move", 
+            description: "Subcategories can only be reordered within their parent category",
+            variant: "destructive"
+          });
+          return;
+        }
+      } else {
+        toast({ 
+          title: "Invalid move", 
+          description: "Subcategories can only be reordered within their parent category",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+
+    // If both are subcategories, ensure they have the same parent
+    if (activeCategory.parent_category_id && overCategory.parent_category_id) {
+      if (activeCategory.parent_category_id !== overCategory.parent_category_id) {
+        toast({ 
+          title: "Invalid move", 
+          description: "Subcategories can only be reordered within their parent category",
+          variant: "destructive"
+        });
+        return;
+      }
+    }
+
+    // Reorder within the organized list
+    const oldIndex = organizedCategories.findIndex((c) => c.id === active.id);
+    const newIndex = organizedCategories.findIndex((c) => c.id === over.id);
+
+    const reordered = arrayMove([...organizedCategories], oldIndex, newIndex);
+    
+    // Rebuild categories array with updated display_order
+    // Parent categories get their own sequence, subcategories get sequence within parent
+    const parentCats = reordered.filter(c => !c.parent_category_id);
+    const updatedCategories: Category[] = [];
+    
+    parentCats.forEach((parent, parentIdx) => {
+      updatedCategories.push({ ...parent, display_order: parentIdx });
+      const children = reordered
+        .filter(c => c.parent_category_id === parent.id);
+      children.forEach((child, childIdx) => {
+        updatedCategories.push({ ...child, display_order: childIdx });
+      });
+    });
+    
+    setCategories(updatedCategories);
 
     // Update display_order in database
-    const updates = reordered.map((cat, idx) => ({
-      id: cat.id,
-      display_order: idx,
-    }));
-
-    for (const update of updates) {
+    for (const cat of updatedCategories) {
       await supabase
         .from("menu_categories")
-        .update({ display_order: update.display_order })
-        .eq("id", update.id);
+        .update({ display_order: cat.display_order })
+        .eq("id", cat.id);
     }
 
     toast({ title: "Success", description: "Category order updated" });
