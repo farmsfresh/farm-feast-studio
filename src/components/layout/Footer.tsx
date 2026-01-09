@@ -39,14 +39,13 @@ const socialLinks = [{
 export const Footer = () => {
   return <footer className="bg-forest text-cream">
       <div className="container mx-auto px-4 lg:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
           {/* Brand with Large Logo */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex flex-col items-start gap-4 mb-6">
               <img src={logo} alt="Farms Fresh Food Catering" className="h-24 md:h-28 lg:h-32 w-auto" />
               <div className="flex flex-col">
                 <span className="font-serif font-bold text-lg md:text-xl leading-tight text-cream">FARMS FRESH EVENTS & CATERING</span>
-                
               </div>
             </Link>
             
@@ -68,9 +67,6 @@ export const Footer = () => {
                 </li>)}
             </ul>
           </div>
-
-          {/* Services */}
-          
 
           {/* Contact */}
           <div>
