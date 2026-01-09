@@ -62,20 +62,31 @@ export type Database = {
           display_order: number
           id: string
           name: string
+          parent_category_id: string | null
         }
         Insert: {
           created_at?: string
           display_order?: number
           id?: string
           name: string
+          parent_category_id?: string | null
         }
         Update: {
           created_at?: string
           display_order?: number
           id?: string
           name?: string
+          parent_category_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "menu_categories_parent_category_id_fkey"
+            columns: ["parent_category_id"]
+            isOneToOne: false
+            referencedRelation: "menu_categories"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       menu_item_modifiers: {
         Row: {

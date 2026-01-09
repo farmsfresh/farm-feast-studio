@@ -10,6 +10,7 @@ interface Category {
   id: string;
   name: string;
   display_order: number;
+  parent_category_id: string | null;
 }
 interface MenuItem {
   id: string;
@@ -58,8 +59,27 @@ const Order = () => {
     };
     fetchData();
   }, []);
-  const activeItems = menuItems.filter(item => item.category_id === activeCategory);
+  // Get parent categories (those without parent_category_id)
+  const parentCategories = categories.filter(c => !c.parent_category_id);
+  
+  // Get subcategories for a given parent
+  const getSubcategories = (parentId: string) => 
+    categories.filter(c => c.parent_category_id === parentId);
+  
+  // Check if active category is a parent with subcategories
+  const activeSubcategories = getSubcategories(activeCategory);
+  const hasSubcategories = activeSubcategories.length > 0;
+  
+  // Get items for active category (including subcategory items if viewing parent)
+  const activeItems = hasSubcategories 
+    ? [] // Don't show items directly for parent with subcategories
+    : menuItems.filter(item => item.category_id === activeCategory);
+  
   const activeCategoryName = categories.find(c => c.id === activeCategory)?.name || "";
+  const activeParentCategory = categories.find(c => c.id === activeCategory);
+  const parentOfActive = activeParentCategory?.parent_category_id 
+    ? categories.find(c => c.id === activeParentCategory.parent_category_id)
+    : null;
   return <Layout>
       {/* Hero */}
       <section className="pt-32 pb-12 bg-gradient-to-b from-forest to-forest-dark">
@@ -92,14 +112,59 @@ const Order = () => {
           {loading ? <div className="flex items-center justify-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-gold" />
             </div> : <>
-              {/* Categories */}
-              <div className="mb-10 overflow-x-auto pb-4">
-                <div className="flex gap-2 min-w-max text-[#73edc0]">
-                  {categories.map(category => <button key={category.id} onClick={() => setActiveCategory(category.id)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${activeCategory === category.id ? "bg-gold text-forest-dark" : "bg-secondary text-foreground hover:bg-gold/20"}`}>
-                      {category.name}
-                    </button>)}
+              {/* Parent Categories */}
+              <div className="mb-6 overflow-x-auto pb-4">
+                <div className="flex gap-2 min-w-max">
+                  {parentCategories.map(category => {
+                    const subcats = getSubcategories(category.id);
+                    const isActive = activeCategory === category.id || subcats.some(s => s.id === activeCategory);
+                    return (
+                      <button 
+                        key={category.id} 
+                        onClick={() => setActiveCategory(category.id)} 
+                        className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all duration-300 ${
+                          isActive 
+                            ? "bg-gold text-forest-dark" 
+                            : "bg-secondary text-foreground hover:bg-gold/20"
+                        }`}
+                      >
+                        {category.name}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
+
+              {/* Subcategories (if parent has subcategories) */}
+              {hasSubcategories && (
+                <div className="mb-8 overflow-x-auto pb-2">
+                  <div className="flex gap-2 min-w-max">
+                    {activeSubcategories.map(subcat => (
+                      <button 
+                        key={subcat.id} 
+                        onClick={() => setActiveCategory(subcat.id)} 
+                        className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 bg-forest/10 text-forest hover:bg-forest/20 border border-forest/20"
+                      >
+                        {subcat.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Breadcrumb for subcategory */}
+              {parentOfActive && (
+                <div className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
+                  <button 
+                    onClick={() => setActiveCategory(parentOfActive.id)}
+                    className="hover:text-gold transition-colors"
+                  >
+                    {parentOfActive.name}
+                  </button>
+                  <span>/</span>
+                  <span className="text-foreground font-medium">{activeCategoryName}</span>
+                </div>
+              )}
 
               {/* Menu Items */}
               <motion.div key={activeCategory} initial={{
@@ -111,14 +176,14 @@ const Order = () => {
           }} transition={{
             duration: 0.4
           }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {activeItems.length === 0 ? <div className="col-span-full text-center py-12">
+                {activeItems.length === 0 && !hasSubcategories ? <div className="col-span-full text-center py-12">
                     <p className="text-muted-foreground text-lg">
                       No items available in {activeCategoryName} yet.
                     </p>
                     <p className="text-muted-foreground/70 text-sm mt-2">
                       Check back soon for delicious options!
                     </p>
-                  </div> : activeItems.map(item => <div key={item.id} className="bg-card rounded-xl overflow-hidden border border-border hover:border-gold/30 hover:shadow-elegant transition-all duration-300">
+                  </div> : !hasSubcategories && activeItems.map(item => <div key={item.id} className="bg-card rounded-xl overflow-hidden border border-border hover:border-gold/30 hover:shadow-elegant transition-all duration-300">
                       {/* Menu Item Image */}
                       <div className="relative h-48 overflow-hidden">
                         {item.image_url ? <img src={item.image_url} alt={item.name} className="w-full h-full object-cover transition-transform duration-300 hover:scale-105" /> : <div className="w-full h-full bg-gradient-to-br from-gold/20 to-forest/20 flex items-center justify-center">
