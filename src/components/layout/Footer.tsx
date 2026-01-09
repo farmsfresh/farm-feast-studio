@@ -1,5 +1,9 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Phone, Mail, MapPin, Clock, Facebook, Linkedin } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Facebook, Linkedin, Send } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
 import logo from "@/assets/logo.png";
 
 // YouTube icon component
@@ -36,10 +40,33 @@ const socialLinks = [{
   href: "https://linkedin.com",
   label: "LinkedIn"
 }];
+
 export const Footer = () => {
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email.trim() || !emailRegex.test(email.trim())) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+
+    setIsSubmitting(true);
+    
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    toast.success("Thank you for subscribing to our newsletter!");
+    setEmail("");
+    setIsSubmitting(false);
+  };
+
   return <footer className="bg-forest text-cream">
       <div className="container mx-auto px-4 lg:px-8 py-12 md:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
           {/* Brand with Large Logo */}
           <div className="lg:col-span-1">
             <Link to="/" className="flex flex-col items-start gap-4 mb-6">
@@ -98,6 +125,35 @@ export const Footer = () => {
                 </span>
               </li>
             </ul>
+          </div>
+
+          {/* Newsletter */}
+          <div>
+            <h4 className="font-serif text-lg font-semibold mb-4 md:mb-6 text-gold">Newsletter</h4>
+            <p className="text-cream/70 text-sm mb-4">
+              Subscribe to receive updates on special offers, events, and new menu items.
+            </p>
+            <form onSubmit={handleNewsletterSubmit} className="space-y-3">
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-cream/10 border-cream/20 text-cream placeholder:text-cream/50 focus:border-gold"
+                maxLength={255}
+              />
+              <Button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="w-full bg-gold hover:bg-gold/90 text-forest-dark font-semibold"
+              >
+                {isSubmitting ? "Subscribing..." : (
+                  <>
+                    Subscribe <Send className="w-4 h-4 ml-2" />
+                  </>
+                )}
+              </Button>
+            </form>
           </div>
         </div>
 
