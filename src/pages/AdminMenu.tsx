@@ -145,7 +145,12 @@ function SortableCategoryRow({
           <GripVertical className="w-4 h-4 text-muted-foreground" />
         </button>
       </TableCell>
-      <TableCell className="font-medium">{category.name}</TableCell>
+      <TableCell className="font-medium">
+        <span className={cn(category.parent_category_id && "pl-6 text-muted-foreground")}>
+          {category.parent_category_id && "↳ "}
+          {category.name}
+        </span>
+      </TableCell>
       <TableCell>
         {category.parent_category_id
           ? getCategoryName(category.parent_category_id)
@@ -759,8 +764,24 @@ const AdminMenu = () => {
     toast({ title: "Success", description: "Item order updated" });
   };
 
+  // Organize categories hierarchically for display
+  const organizedCategories = useMemo(() => {
+    const parentCategories = categories.filter(c => !c.parent_category_id);
+    const result: Category[] = [];
+    
+    parentCategories.forEach(parent => {
+      result.push(parent);
+      const children = categories
+        .filter(c => c.parent_category_id === parent.id)
+        .sort((a, b) => a.display_order - b.display_order);
+      result.push(...children);
+    });
+    
+    return result;
+  }, [categories]);
+
   // Memoized IDs for sortable context
-  const categoryIds = useMemo(() => categories.map((c) => c.id), [categories]);
+  const categoryIds = useMemo(() => organizedCategories.map((c) => c.id), [organizedCategories]);
   const filteredItemIds = useMemo(() => filteredItems.map((i) => i.id), [filteredItems]);
 
   // Check if drag should be disabled (when filtering/searching)
@@ -968,7 +989,7 @@ const AdminMenu = () => {
                 >
                   <SortableContext items={categoryIds} strategy={verticalListSortingStrategy}>
                     <TableBody>
-                      {categories.length === 0 ? (
+                      {organizedCategories.length === 0 ? (
                         <TableRow>
                           <TableCell colSpan={6} className="text-center py-8">
                             <FolderOpen className="w-10 h-10 mx-auto text-muted-foreground mb-2" />
@@ -976,7 +997,7 @@ const AdminMenu = () => {
                           </TableCell>
                         </TableRow>
                       ) : (
-                        categories.map((category) => (
+                        organizedCategories.map((category) => (
                           <SortableCategoryRow
                             key={category.id}
                             category={category}
