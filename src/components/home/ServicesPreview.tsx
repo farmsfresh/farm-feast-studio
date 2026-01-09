@@ -32,7 +32,7 @@ const services = [{
   description: "Unique pop-up dining experiences that create lasting impressions."
 }];
 export const ServicesPreview = () => {
-  return <section className="py-24 bg-secondary">
+  return <section className="pt-12 pb-24 bg-secondary">
       <div className="container mx-auto px-4 lg:px-8">
         <motion.div initial={{
         opacity: 0,
