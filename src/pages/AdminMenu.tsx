@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -57,10 +57,29 @@ import {
   Eye,
   EyeOff,
   FolderInput,
+  GripVertical,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import { cn } from "@/lib/utils";
 
 interface Category {
   id: string;
@@ -78,6 +97,202 @@ interface MenuItem {
   image_url: string | null;
   is_available: boolean;
   display_order: number;
+}
+
+// Sortable row components
+interface SortableCategoryRowProps {
+  category: Category;
+  menuItems: MenuItem[];
+  getCategoryName: (id: string) => string;
+  openCategoryDialog: (cat: Category) => void;
+  confirmDelete: (type: "item" | "category", id: string, name: string) => void;
+}
+
+function SortableCategoryRow({
+  category,
+  menuItems,
+  getCategoryName,
+  openCategoryDialog,
+  confirmDelete,
+}: SortableCategoryRowProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: category.id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <TableRow
+      ref={setNodeRef}
+      style={style}
+      className={cn(isDragging && "opacity-50 bg-muted/50")}
+    >
+      <TableCell className="w-10">
+        <button
+          {...attributes}
+          {...listeners}
+          className="cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted transition-colors"
+        >
+          <GripVertical className="w-4 h-4 text-muted-foreground" />
+        </button>
+      </TableCell>
+      <TableCell className="font-medium">{category.name}</TableCell>
+      <TableCell>
+        {category.parent_category_id
+          ? getCategoryName(category.parent_category_id)
+          : <span className="text-muted-foreground">—</span>}
+      </TableCell>
+      <TableCell>
+        {menuItems.filter((i) => i.category_id === category.id).length}
+      </TableCell>
+      <TableCell>{category.display_order}</TableCell>
+      <TableCell className="text-right">
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => openCategoryDialog(category)}
+          >
+            <Pencil className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => confirmDelete("category", category.id, category.name)}
+            className="text-destructive hover:text-destructive"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
+}
+
+interface SortableMenuItemRowProps {
+  item: MenuItem;
+  isSelected: boolean;
+  toggleSelectItem: (id: string) => void;
+  getCategoryName: (id: string) => string;
+  toggleItemAvailability: (item: MenuItem) => void;
+  openItemDialog: (item: MenuItem) => void;
+  confirmDelete: (type: "item" | "category", id: string, name: string) => void;
+  isDragDisabled: boolean;
+}
+
+function SortableMenuItemRow({
+  item,
+  isSelected,
+  toggleSelectItem,
+  getCategoryName,
+  toggleItemAvailability,
+  openItemDialog,
+  confirmDelete,
+  isDragDisabled,
+}: SortableMenuItemRowProps) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: item.id, disabled: isDragDisabled });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <TableRow
+      ref={setNodeRef}
+      style={style}
+      className={cn(isDragging && "opacity-50 bg-muted/50")}
+      data-state={isSelected ? "selected" : undefined}
+    >
+      <TableCell className="w-10">
+        <button
+          {...attributes}
+          {...listeners}
+          className={cn(
+            "cursor-grab active:cursor-grabbing p-1 rounded hover:bg-muted transition-colors",
+            isDragDisabled && "opacity-30 cursor-not-allowed"
+          )}
+          disabled={isDragDisabled}
+        >
+          <GripVertical className="w-4 h-4 text-muted-foreground" />
+        </button>
+      </TableCell>
+      <TableCell>
+        <Checkbox
+          checked={isSelected}
+          onCheckedChange={() => toggleSelectItem(item.id)}
+        />
+      </TableCell>
+      <TableCell>
+        {item.image_url ? (
+          <img
+            src={item.image_url}
+            alt={item.name}
+            className="w-12 h-12 rounded-lg object-cover"
+          />
+        ) : (
+          <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center">
+            <ImageIcon className="w-5 h-5 text-muted-foreground" />
+          </div>
+        )}
+      </TableCell>
+      <TableCell>
+        <div>
+          <p className="font-medium">{item.name}</p>
+          {item.description && (
+            <p className="text-sm text-muted-foreground truncate max-w-xs">
+              {item.description}
+            </p>
+          )}
+        </div>
+      </TableCell>
+      <TableCell>{getCategoryName(item.category_id)}</TableCell>
+      <TableCell className="font-bold text-gold">
+        ${Number(item.price).toFixed(2)}
+      </TableCell>
+      <TableCell>
+        <Switch
+          checked={item.is_available}
+          onCheckedChange={() => toggleItemAvailability(item)}
+        />
+      </TableCell>
+      <TableCell>{item.display_order}</TableCell>
+      <TableCell className="text-right">
+        <div className="flex justify-end gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => openItemDialog(item)}
+          >
+            <Pencil className="w-4 h-4" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => confirmDelete("item", item.id, item.name)}
+            className="text-destructive hover:text-destructive"
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+        </div>
+      </TableCell>
+    </TableRow>
+  );
 }
 
 const AdminMenu = () => {
@@ -432,6 +647,91 @@ const AdminMenu = () => {
     setBulkCategoryId("");
   };
 
+  // Drag and drop sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Drag handlers
+  const handleCategoryDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = categories.findIndex((c) => c.id === active.id);
+    const newIndex = categories.findIndex((c) => c.id === over.id);
+
+    const reordered = arrayMove(categories, oldIndex, newIndex);
+    setCategories(reordered);
+
+    // Update display_order in database
+    const updates = reordered.map((cat, idx) => ({
+      id: cat.id,
+      display_order: idx,
+    }));
+
+    for (const update of updates) {
+      await supabase
+        .from("menu_categories")
+        .update({ display_order: update.display_order })
+        .eq("id", update.id);
+    }
+
+    toast({ title: "Success", description: "Category order updated" });
+  };
+
+  const handleItemDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = filteredItems.findIndex((i) => i.id === active.id);
+    const newIndex = filteredItems.findIndex((i) => i.id === over.id);
+
+    // Reorder in full menu items array based on filtered items order
+    const reorderedFiltered = arrayMove(filteredItems, oldIndex, newIndex);
+    
+    // Build new full array maintaining positions
+    const reordered = menuItems.map((item) => {
+      const filteredIdx = reorderedFiltered.findIndex((f) => f.id === item.id);
+      if (filteredIdx !== -1) {
+        return { ...item, display_order: filteredIdx };
+      }
+      return item;
+    });
+    
+    setMenuItems(reordered);
+
+    // Update display_order in database for filtered items
+    const updates = reorderedFiltered.map((item, idx) => ({
+      id: item.id,
+      display_order: idx,
+    }));
+
+    for (const update of updates) {
+      await supabase
+        .from("menu_items")
+        .update({ display_order: update.display_order })
+        .eq("id", update.id);
+    }
+
+    toast({ title: "Success", description: "Item order updated" });
+  };
+
+  // Memoized IDs for sortable context
+  const categoryIds = useMemo(() => categories.map((c) => c.id), [categories]);
+  const filteredItemIds = useMemo(() => filteredItems.map((i) => i.id), [filteredItems]);
+
+  // Check if drag should be disabled (when filtering/searching)
+  const isDragDisabled = searchTerm !== "" || categoryFilter !== "all";
+
   // Stats
   const totalItems = menuItems.length;
   const availableItems = menuItems.filter((i) => i.is_available).length;
@@ -608,11 +908,18 @@ const AdminMenu = () => {
 
           {/* Categories Section */}
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Categories</h2>
+            <div className="flex items-center gap-3 mb-4">
+              <h2 className="text-xl font-semibold text-foreground">Categories</h2>
+              <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                <GripVertical className="w-3 h-3 inline mr-1" />
+                Drag to reorder
+              </span>
+            </div>
             <div className="bg-card rounded-xl border border-border overflow-hidden">
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10"></TableHead>
                     <TableHead>Name</TableHead>
                     <TableHead>Parent</TableHead>
                     <TableHead>Items</TableHead>
@@ -620,50 +927,35 @@ const AdminMenu = () => {
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
-                  {categories.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={5} className="text-center py-8">
-                        <FolderOpen className="w-10 h-10 mx-auto text-muted-foreground mb-2" />
-                        <p className="text-muted-foreground">No categories found</p>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    categories.map((category) => (
-                      <TableRow key={category.id}>
-                        <TableCell className="font-medium">{category.name}</TableCell>
-                        <TableCell>
-                          {category.parent_category_id 
-                            ? getCategoryName(category.parent_category_id) 
-                            : <span className="text-muted-foreground">—</span>}
-                        </TableCell>
-                        <TableCell>
-                          {menuItems.filter((i) => i.category_id === category.id).length}
-                        </TableCell>
-                        <TableCell>{category.display_order}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openCategoryDialog(category)}
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => confirmDelete("category", category.id, category.name)}
-                              className="text-destructive hover:text-destructive"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleCategoryDragEnd}
+                >
+                  <SortableContext items={categoryIds} strategy={verticalListSortingStrategy}>
+                    <TableBody>
+                      {categories.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center py-8">
+                            <FolderOpen className="w-10 h-10 mx-auto text-muted-foreground mb-2" />
+                            <p className="text-muted-foreground">No categories found</p>
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        categories.map((category) => (
+                          <SortableCategoryRow
+                            key={category.id}
+                            category={category}
+                            menuItems={menuItems}
+                            getCategoryName={getCategoryName}
+                            openCategoryDialog={openCategoryDialog}
+                            confirmDelete={confirmDelete}
+                          />
+                        ))
+                      )}
+                    </TableBody>
+                  </SortableContext>
+                </DndContext>
               </Table>
             </div>
           </div>
@@ -671,7 +963,20 @@ const AdminMenu = () => {
           {/* Menu Items Section */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-foreground">Menu Items</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-xl font-semibold text-foreground">Menu Items</h2>
+                {!isDragDisabled && (
+                  <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                    <GripVertical className="w-3 h-3 inline mr-1" />
+                    Drag to reorder
+                  </span>
+                )}
+                {isDragDisabled && (
+                  <span className="text-xs text-yellow-600 bg-yellow-500/10 px-2 py-1 rounded">
+                    Clear filters to reorder
+                  </span>
+                )}
+              </div>
               {selectedItems.size > 0 && (
                 <div className="flex items-center gap-2 bg-muted/50 rounded-lg px-4 py-2">
                   <span className="text-sm font-medium">{selectedItems.size} selected</span>
@@ -723,6 +1028,7 @@ const AdminMenu = () => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-10"></TableHead>
                     <TableHead className="w-12">
                       <Checkbox
                         checked={filteredItems.length > 0 && selectedItems.size === filteredItems.length}
@@ -738,80 +1044,38 @@ const AdminMenu = () => {
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
-                <TableBody>
-                  {filteredItems.length === 0 ? (
-                    <TableRow>
-                      <TableCell colSpan={8} className="text-center py-8">
-                        <UtensilsCrossed className="w-10 h-10 mx-auto text-muted-foreground mb-2" />
-                        <p className="text-muted-foreground">No menu items found</p>
-                      </TableCell>
-                    </TableRow>
-                  ) : (
-                    filteredItems.map((item) => (
-                      <TableRow key={item.id} data-state={selectedItems.has(item.id) ? "selected" : undefined}>
-                        <TableCell>
-                          <Checkbox
-                            checked={selectedItems.has(item.id)}
-                            onCheckedChange={() => toggleSelectItem(item.id)}
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleItemDragEnd}
+                >
+                  <SortableContext items={filteredItemIds} strategy={verticalListSortingStrategy}>
+                    <TableBody>
+                      {filteredItems.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={9} className="text-center py-8">
+                            <UtensilsCrossed className="w-10 h-10 mx-auto text-muted-foreground mb-2" />
+                            <p className="text-muted-foreground">No menu items found</p>
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredItems.map((item) => (
+                          <SortableMenuItemRow
+                            key={item.id}
+                            item={item}
+                            isSelected={selectedItems.has(item.id)}
+                            toggleSelectItem={toggleSelectItem}
+                            getCategoryName={getCategoryName}
+                            toggleItemAvailability={toggleItemAvailability}
+                            openItemDialog={openItemDialog}
+                            confirmDelete={confirmDelete}
+                            isDragDisabled={isDragDisabled}
                           />
-                        </TableCell>
-                        <TableCell>
-                          {item.image_url ? (
-                            <img
-                              src={item.image_url}
-                              alt={item.name}
-                              className="w-12 h-12 rounded-lg object-cover"
-                            />
-                          ) : (
-                            <div className="w-12 h-12 rounded-lg bg-muted flex items-center justify-center">
-                              <ImageIcon className="w-5 h-5 text-muted-foreground" />
-                            </div>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          <div>
-                            <p className="font-medium">{item.name}</p>
-                            {item.description && (
-                              <p className="text-sm text-muted-foreground truncate max-w-xs">
-                                {item.description}
-                              </p>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell>{getCategoryName(item.category_id)}</TableCell>
-                        <TableCell className="font-bold text-gold">
-                          ${Number(item.price).toFixed(2)}
-                        </TableCell>
-                        <TableCell>
-                          <Switch
-                            checked={item.is_available}
-                            onCheckedChange={() => toggleItemAvailability(item)}
-                          />
-                        </TableCell>
-                        <TableCell>{item.display_order}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => openItemDialog(item)}
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => confirmDelete("item", item.id, item.name)}
-                              className="text-destructive hover:text-destructive"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  )}
-                </TableBody>
+                        ))
+                      )}
+                    </TableBody>
+                  </SortableContext>
+                </DndContext>
               </Table>
             </div>
           </div>
