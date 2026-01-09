@@ -3,7 +3,32 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
-import { ShoppingCart, Plus, Minus, Loader2 } from "lucide-react";
+import { 
+  ShoppingCart, Plus, Minus, Loader2,
+  UtensilsCrossed, Coffee, Sandwich, Salad, Soup, 
+  Drumstick, Pizza, Palmtree, Flame,
+  Cookie, GlassWater, Package, Leaf, Cherry
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+// Category icon mapping
+const categoryIcons: Record<string, LucideIcon> = {
+  "Buffet Packages": Package,
+  "Breakfast": Coffee,
+  "Sandwiches": Sandwich,
+  "Salad": Salad,
+  "Power Bowls": Leaf,
+  "Mediterranean": Soup,
+  "Thai": Drumstick,
+  "Latin": Flame,
+  "Italian": Pizza,
+  "Jamaican": Palmtree,
+  "Indian": Flame,
+  "Sides": UtensilsCrossed,
+  "Appetizers": Cherry,
+  "Desserts": Cookie,
+  "Beverages": GlassWater,
+};
 import { supabase } from "@/integrations/supabase/client";
 import { useCart } from "@/contexts/CartContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -179,17 +204,21 @@ const Order = () => {
             <Tabs defaultValue={parentCategories[0]?.id} className="w-full">
               <div className="sticky top-16 z-40 bg-secondary/80 backdrop-blur-sm pt-4 pb-4 -mx-4 px-4 lg:-mx-8 lg:px-8 border-b border-border shadow-sm">
                 <TabsList className="w-full flex-wrap h-auto gap-2 bg-transparent justify-start overflow-x-auto">
-                  {parentCategories.map((category) => (
-                    <TabsTrigger
-                      key={category.id}
-                      value={category.id}
-                      className="px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap
-                        data-[state=active]:bg-gold data-[state=active]:text-forest-dark data-[state=active]:shadow-md
-                        data-[state=inactive]:bg-card data-[state=inactive]:text-foreground data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:hover:bg-accent"
-                    >
-                      {category.name}
-                    </TabsTrigger>
-                  ))}
+                  {parentCategories.map((category) => {
+                    const IconComponent = categoryIcons[category.name] || UtensilsCrossed;
+                    return (
+                      <TabsTrigger
+                        key={category.id}
+                        value={category.id}
+                        className="px-5 py-2.5 text-sm font-medium rounded-lg transition-all duration-200 whitespace-nowrap flex items-center gap-2
+                          data-[state=active]:bg-gold data-[state=active]:text-forest-dark data-[state=active]:shadow-md
+                          data-[state=inactive]:bg-card data-[state=inactive]:text-foreground data-[state=inactive]:border data-[state=inactive]:border-border data-[state=inactive]:hover:bg-accent"
+                      >
+                        <IconComponent className="w-4 h-4" />
+                        {category.name}
+                      </TabsTrigger>
+                    );
+                  })}
                 </TabsList>
               </div>
 
