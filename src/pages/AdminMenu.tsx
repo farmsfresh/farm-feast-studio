@@ -58,6 +58,7 @@ import {
   EyeOff,
   FolderInput,
   GripVertical,
+  Copy,
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
@@ -185,6 +186,7 @@ interface SortableMenuItemRowProps {
   toggleItemAvailability: (item: MenuItem) => void;
   openItemDialog: (item: MenuItem) => void;
   confirmDelete: (type: "item" | "category", id: string, name: string) => void;
+  duplicateItem: (item: MenuItem) => void;
   isDragDisabled: boolean;
 }
 
@@ -196,6 +198,7 @@ function SortableMenuItemRow({
   toggleItemAvailability,
   openItemDialog,
   confirmDelete,
+  duplicateItem,
   isDragDisabled,
 }: SortableMenuItemRowProps) {
   const {
@@ -274,6 +277,14 @@ function SortableMenuItemRow({
       <TableCell>{item.display_order}</TableCell>
       <TableCell className="text-right">
         <div className="flex justify-end gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => duplicateItem(item)}
+            title="Duplicate item"
+          >
+            <Copy className="w-4 h-4" />
+          </Button>
           <Button
             variant="ghost"
             size="icon"
@@ -452,6 +463,29 @@ const AdminMenu = () => {
         setItemDialogOpen(false);
         fetchData();
       }
+    }
+  };
+
+  // Duplicate item
+  const duplicateItem = async (item: MenuItem) => {
+    const maxOrder = Math.max(...menuItems.map((i) => i.display_order), 0);
+    const duplicateData = {
+      name: `${item.name} (Copy)`,
+      description: item.description,
+      price: item.price,
+      category_id: item.category_id,
+      image_url: item.image_url,
+      is_available: item.is_available,
+      display_order: maxOrder + 1,
+    };
+
+    const { error } = await supabase.from("menu_items").insert(duplicateData);
+
+    if (error) {
+      toast({ title: "Error", description: "Failed to duplicate item", variant: "destructive" });
+    } else {
+      toast({ title: "Success", description: `"${item.name}" duplicated successfully` });
+      fetchData();
     }
   };
 
@@ -1069,6 +1103,7 @@ const AdminMenu = () => {
                             toggleItemAvailability={toggleItemAvailability}
                             openItemDialog={openItemDialog}
                             confirmDelete={confirmDelete}
+                            duplicateItem={duplicateItem}
                             isDragDisabled={isDragDisabled}
                           />
                         ))
