@@ -177,17 +177,24 @@ const Order = () => {
             </div>
           ) : (
             <Tabs defaultValue={parentCategories[0]?.id} className="w-full">
-              <TabsList className="w-full flex-wrap h-auto gap-2 bg-transparent mb-8 justify-start">
-                {parentCategories.map(category => (
-                  <TabsTrigger
-                    key={category.id}
-                    value={category.id}
-                    className="px-5 py-2.5 rounded-full text-sm font-medium data-[state=active]:bg-gold data-[state=active]:text-forest-dark bg-secondary hover:bg-gold/20"
-                  >
-                    {category.name}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
+              <div className="relative mb-8">
+                <div className="absolute bottom-0 left-0 right-0 h-px bg-border" />
+                <TabsList className="w-full flex-wrap h-auto gap-0 bg-transparent justify-start relative z-10">
+                  {parentCategories.map((category, index) => (
+                    <TabsTrigger
+                      key={category.id}
+                      value={category.id}
+                      className="relative px-6 py-3 text-sm font-medium rounded-t-lg border border-b-0 border-transparent transition-all duration-200
+                        data-[state=active]:bg-background data-[state=active]:border-border data-[state=active]:text-gold data-[state=active]:shadow-sm
+                        data-[state=inactive]:bg-muted/50 data-[state=inactive]:text-muted-foreground data-[state=inactive]:hover:bg-muted data-[state=inactive]:hover:text-foreground
+                        data-[state=active]:after:absolute data-[state=active]:after:bottom-[-1px] data-[state=active]:after:left-0 data-[state=active]:after:right-0 data-[state=active]:after:h-px data-[state=active]:after:bg-background
+                        -ml-px first:ml-0"
+                    >
+                      {category.name}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </div>
 
               {parentCategories.map(parentCategory => {
                 const subcategories = getSubcategories(parentCategory.id);
@@ -204,17 +211,19 @@ const Order = () => {
                       {hasSubcategories ? (
                         // Nested tabs for subcategories
                         <Tabs defaultValue={subcategories[0]?.id} className="w-full">
-                          <TabsList className="w-full flex-wrap h-auto gap-2 bg-transparent mb-6 justify-start">
+                          <div className="flex flex-wrap gap-2 mb-6">
                             {subcategories.map(subcat => (
                               <TabsTrigger
                                 key={subcat.id}
                                 value={subcat.id}
-                                className="px-4 py-2 rounded-lg text-sm font-medium data-[state=active]:bg-forest data-[state=active]:text-cream bg-forest/10 hover:bg-forest/20 border border-forest/20"
+                                asChild
                               >
-                                {subcat.name}
+                                <button className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-border bg-card hover:bg-accent data-[state=active]:bg-forest data-[state=active]:text-cream data-[state=active]:border-forest">
+                                  {subcat.name}
+                                </button>
                               </TabsTrigger>
                             ))}
-                          </TabsList>
+                          </div>
 
                           {subcategories.map(subcat => {
                             const subcatItems = getItemsForCategory(subcat.id);
