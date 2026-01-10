@@ -98,7 +98,14 @@ interface MenuItem {
   image_url: string | null;
   is_available: boolean;
   display_order: number;
+  dietary_tags: string[] | null;
 }
+
+const DIETARY_OPTIONS = [
+  { id: "vegetarian", label: "Vegetarian" },
+  { id: "vegan", label: "Vegan" },
+  { id: "gluten-free", label: "Gluten-Free" },
+];
 
 // Sortable row components
 interface SortableCategoryRowProps {
@@ -343,6 +350,7 @@ const AdminMenu = () => {
     image_url: "",
     is_available: true,
     display_order: 0,
+    dietary_tags: [] as string[],
   });
   const [categoryForm, setCategoryForm] = useState({
     name: "",
@@ -413,6 +421,7 @@ const AdminMenu = () => {
         image_url: item.image_url || "",
         is_available: item.is_available,
         display_order: item.display_order,
+        dietary_tags: item.dietary_tags || [],
       });
     } else {
       setEditingItem(null);
@@ -424,6 +433,7 @@ const AdminMenu = () => {
         image_url: "",
         is_available: true,
         display_order: 0,
+        dietary_tags: [],
       });
     }
     setItemDialogOpen(true);
@@ -443,6 +453,7 @@ const AdminMenu = () => {
       image_url: itemForm.image_url || null,
       is_available: itemForm.is_available,
       display_order: itemForm.display_order,
+      dietary_tags: itemForm.dietary_tags.length > 0 ? itemForm.dietary_tags : null,
     };
 
     if (editingItem) {
@@ -482,6 +493,7 @@ const AdminMenu = () => {
       image_url: item.image_url,
       is_available: item.is_available,
       display_order: maxOrder + 1,
+      dietary_tags: item.dietary_tags,
     };
 
     const { error } = await supabase.from("menu_items").insert(duplicateData);
@@ -1263,6 +1275,30 @@ const AdminMenu = () => {
                 onChange={(e) => setItemForm((f) => ({ ...f, image_url: e.target.value }))}
                 placeholder="https://..."
               />
+            </div>
+            <div>
+              <Label className="mb-3 block">Dietary Tags</Label>
+              <div className="flex flex-wrap gap-3">
+                {DIETARY_OPTIONS.map(option => (
+                  <div key={option.id} className="flex items-center gap-2">
+                    <Checkbox
+                      id={`dietary-${option.id}`}
+                      checked={itemForm.dietary_tags.includes(option.id)}
+                      onCheckedChange={(checked) => {
+                        setItemForm(f => ({
+                          ...f,
+                          dietary_tags: checked 
+                            ? [...f.dietary_tags, option.id]
+                            : f.dietary_tags.filter(t => t !== option.id)
+                        }));
+                      }}
+                    />
+                    <Label htmlFor={`dietary-${option.id}`} className="text-sm font-normal cursor-pointer">
+                      {option.label}
+                    </Label>
+                  </div>
+                ))}
+              </div>
             </div>
             <div className="flex items-center gap-3">
               <Switch
