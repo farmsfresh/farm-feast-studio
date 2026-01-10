@@ -8,6 +8,7 @@ interface MenuItem {
   price: number;
   category_id: string;
   image_url: string | null;
+  dietary_tags: string[] | null;
 }
 
 interface CartItem extends MenuItem {

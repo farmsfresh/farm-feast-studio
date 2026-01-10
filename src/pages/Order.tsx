@@ -7,8 +7,10 @@ import {
   ShoppingCart, Plus, Minus, Loader2,
   UtensilsCrossed, Coffee, Sandwich, Salad, Soup, 
   Drumstick, Pizza, Palmtree, Flame,
-  Cookie, GlassWater, Package, Leaf, Cherry
+  Cookie, GlassWater, Package, Leaf, Cherry,
+  Vegan, WheatOff
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import type { LucideIcon } from "lucide-react";
 
 // Category icon mapping
@@ -47,12 +49,20 @@ interface MenuItem {
   price: number;
   category_id: string;
   image_url: string | null;
+  dietary_tags: string[] | null;
 }
+
+const DIETARY_FILTERS = [
+  { id: "vegetarian", label: "Vegetarian", icon: Leaf, color: "bg-green-100 text-green-700 border-green-200" },
+  { id: "vegan", label: "Vegan", icon: Vegan, color: "bg-emerald-100 text-emerald-700 border-emerald-200" },
+  { id: "gluten-free", label: "Gluten-Free", icon: WheatOff, color: "bg-amber-100 text-amber-700 border-amber-200" },
+];
 
 const Order = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeDietaryFilters, setActiveDietaryFilters] = useState<string[]>([]);
   const {
     cart,
     addToCart,
@@ -61,6 +71,24 @@ const Order = () => {
     cartCount
   } = useCart();
   const navigate = useNavigate();
+
+  const toggleDietaryFilter = (filterId: string) => {
+    setActiveDietaryFilters(prev => 
+      prev.includes(filterId) 
+        ? prev.filter(f => f !== filterId)
+        : [...prev, filterId]
+    );
+  };
+
+  // Filter items by dietary tags
+  const filterByDietary = (items: MenuItem[]) => {
+    if (activeDietaryFilters.length === 0) return items;
+    return items.filter(item => 
+      activeDietaryFilters.every(filter => 
+        item.dietary_tags?.includes(filter)
+      )
+    );
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -94,10 +122,15 @@ const Order = () => {
   const getSubcategories = (parentId: string) =>
     categories.filter(c => c.parent_category_id === parentId);
 
-  // Get items for a category
+  // Get items for a category (with dietary filtering)
   const getItemsForCategory = (categoryId: string) =>
-    menuItems.filter(item => item.category_id === categoryId);
+    filterByDietary(menuItems.filter(item => item.category_id === categoryId));
 
+  // Get dietary badge styling
+  const getDietaryBadge = (tag: string) => {
+    const filter = DIETARY_FILTERS.find(f => f.id === tag);
+    return filter || { label: tag, color: "bg-muted text-muted-foreground" };
+  };
   // Render menu item card
   const renderMenuItem = (item: MenuItem) => (
     <div
@@ -124,9 +157,27 @@ const Order = () => {
       </div>
 
       <div className="p-5">
-        <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
-          {item.name}
-        </h3>
+        <div className="flex items-start justify-between gap-2 mb-2">
+          <h3 className="font-serif text-lg font-semibold text-foreground">
+            {item.name}
+          </h3>
+        </div>
+        {item.dietary_tags && item.dietary_tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mb-3">
+            {item.dietary_tags.map(tag => {
+              const badge = getDietaryBadge(tag);
+              return (
+                <Badge 
+                  key={tag} 
+                  variant="outline" 
+                  className={`text-xs px-2 py-0.5 ${badge.color}`}
+                >
+                  {badge.label}
+                </Badge>
+              );
+            })}
+          </div>
+        )}
         <p className="text-muted-foreground text-sm leading-relaxed mb-4 line-clamp-2">
           {item.description}
         </p>
@@ -186,6 +237,41 @@ const Order = () => {
               Explore our diverse menu featuring farm-fresh ingredients from around the world.
             </p>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Dietary Filters */}
+      <section className="py-4 bg-secondary/50 border-b border-border">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-sm font-medium text-muted-foreground">Filter by dietary:</span>
+            {DIETARY_FILTERS.map(filter => {
+              const Icon = filter.icon;
+              const isActive = activeDietaryFilters.includes(filter.id);
+              return (
+                <button
+                  key={filter.id}
+                  onClick={() => toggleDietaryFilter(filter.id)}
+                  className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 border ${
+                    isActive 
+                      ? filter.color + " shadow-sm" 
+                      : "bg-card text-muted-foreground border-border hover:border-gold/30"
+                  }`}
+                >
+                  <Icon className="w-4 h-4" />
+                  {filter.label}
+                </button>
+              );
+            })}
+            {activeDietaryFilters.length > 0 && (
+              <button
+                onClick={() => setActiveDietaryFilters([])}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors underline"
+              >
+                Clear filters
+              </button>
+            )}
+          </div>
         </div>
       </section>
 
