@@ -237,19 +237,17 @@ const Order = () => {
                       {hasSubcategories ? (
                         // Nested tabs for subcategories
                         <Tabs defaultValue={subcategories[0]?.id} className="w-full">
-                          <div className="flex flex-wrap gap-2 mb-6">
+                          <TabsList className="flex flex-wrap gap-2 mb-6 h-auto bg-transparent">
                             {subcategories.map(subcat => (
                               <TabsTrigger
                                 key={subcat.id}
                                 value={subcat.id}
-                                asChild
+                                className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-border bg-card hover:bg-accent data-[state=active]:bg-forest data-[state=active]:text-cream data-[state=active]:border-forest"
                               >
-                                <button className="px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 border border-border bg-card hover:bg-accent data-[state=active]:bg-forest data-[state=active]:text-cream data-[state=active]:border-forest">
-                                  {subcat.name}
-                                </button>
+                                {subcat.name}
                               </TabsTrigger>
                             ))}
-                          </div>
+                          </TabsList>
 
                           {subcategories.map(subcat => {
                             const subcatItems = getItemsForCategory(subcat.id);
