@@ -47,7 +47,7 @@ const socialLinks = [{
   label: "TikTok"
 }, {
   icon: Youtube,
-  href: "https://youtube.com",
+  href: "https://www.youtube.com/@FarmsFreshFood",
   label: "YouTube"
 }, {
   icon: Linkedin,
