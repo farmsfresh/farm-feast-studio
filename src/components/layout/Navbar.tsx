@@ -44,7 +44,7 @@ const navItems = [{
 }];
 const socialLinks = [{
   icon: Facebook,
-  href: "https://facebook.com",
+  href: "https://www.facebook.com/farmsfreshfoodcatering",
   label: "Facebook"
 }, {
   icon: Instagram,
