@@ -60,7 +60,7 @@ const socialLinks = [{
   label: "YouTube"
 }, {
   icon: Linkedin,
-  href: "https://linkedin.com",
+  href: "https://www.linkedin.com/company/farmsfreshfood",
   label: "LinkedIn"
 }];
 export const Navbar = () => {
