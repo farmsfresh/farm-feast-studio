@@ -43,7 +43,7 @@ const About = () => {
       {/* Hero */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-forest to-forest-dark">
         <div className="container mx-auto px-4 lg:px-8">
-        <motion.div initial={{
+          <motion.div initial={{
           opacity: 0,
           y: 30
         }} animate={{
@@ -51,7 +51,7 @@ const About = () => {
           y: 0
         }} transition={{
           duration: 0.6
-        }} className="max-w-3xl mx-auto text-center mt-24">
+        }} className="max-w-3xl mx-auto text-center">
             
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-cream mb-6">About Us
             </h1>
@@ -82,15 +82,8 @@ const About = () => {
                 OUR STORY
               </h2>
               <div className="space-y-6 text-muted-foreground leading-relaxed">
-                <p>
-                  Farms Fresh Food began with a simple mission to transform the way people experience food. 
-                  What started as a small catering operation has grown into a full-service culinary company 
-                  serving thousands of clients across the region.
-                </p>
-                <p>
-                  Our journey is rooted in the belief that exceptional food starts with exceptional ingredients. 
-                  We source the freshest seasonal produce, sustainably raised proteins, and premium pantry staples.
-                </p>
+                <p>Farms Fresh Food began with a simple mission to transform the way people experience food. We believe that the food is medicine and accordingly craft recipes to deliver healthy meals. We approach every event as a unique story, tailoring flavors, presentation, and service to reflect the people being celebrated. The result is more than a beautifully produced event. Our family tradition is about keeping the door open for everyone who want to dine with us. We host many lunch and dinner events to serve people in the community. Our warmth and hospitality has no ends. Guests feel our love in the experience they receive from attending our events.</p>
+                
               </div>
             </motion.div>
             <motion.div initial={{
