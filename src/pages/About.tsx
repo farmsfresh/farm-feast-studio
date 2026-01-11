@@ -43,7 +43,7 @@ const About = () => {
       {/* Hero */}
       <section className="pt-32 pb-16 bg-gradient-to-b from-forest to-forest-dark">
         <div className="container mx-auto px-4 lg:px-8">
-          <motion.div initial={{
+        <motion.div initial={{
           opacity: 0,
           y: 30
         }} animate={{
@@ -51,7 +51,7 @@ const About = () => {
           y: 0
         }} transition={{
           duration: 0.6
-        }} className="max-w-3xl mx-auto text-center">
+        }} className="max-w-3xl mx-auto text-center mt-24">
             
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-cream mb-6">About Us
             </h1>
