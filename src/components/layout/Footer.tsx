@@ -39,7 +39,7 @@ const socialLinks = [{
   label: "Facebook"
 }, {
   icon: Instagram,
-  href: "https://instagram.com",
+  href: "https://www.instagram.com/farmsfreshfood?igsh=NTc4MTIwNjQ2YQ%3D%3D&utm_source=qr",
   label: "Instagram"
 }, {
   icon: TikTok,
