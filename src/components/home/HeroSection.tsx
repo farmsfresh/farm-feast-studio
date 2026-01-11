@@ -18,11 +18,16 @@ export const HeroSection = () => {
       currentVideo.play().catch(() => {});
     }
 
-    // First video plays for 5 seconds, others play full duration
+    // First video: 5 seconds, second video: full duration, others: 2 seconds
     if (currentVideoIndex === 0) {
       const timer = setTimeout(() => {
         setCurrentVideoIndex(1);
       }, 5000);
+      return () => clearTimeout(timer);
+    } else if (currentVideoIndex >= 2) {
+      const timer = setTimeout(() => {
+        setCurrentVideoIndex(prev => (prev + 1) % videos.length);
+      }, 2000);
       return () => clearTimeout(timer);
     }
   }, [currentVideoIndex]);
