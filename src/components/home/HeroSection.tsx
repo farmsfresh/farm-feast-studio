@@ -49,7 +49,7 @@ export const HeroSection = () => {
       </div>
 
       {/* Centered Content - Tresla Style */}
-      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 mt-24">
+      <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 mt-32">
         {/* Title */}
         <motion.div initial={{
         opacity: 0,
@@ -65,24 +65,6 @@ export const HeroSection = () => {
           <p className="text-xs sm:text-sm md:text-base text-cream/80 tracking-[0.3em] mt-4 uppercase">
             Elevated Catering, Corporate Dining, and Events — Hospitality Without Limits
           </p>
-        </motion.div>
-
-        {/* Order Online Button */}
-        <motion.div initial={{
-        opacity: 0,
-        y: 20
-      }} animate={{
-        opacity: 1,
-        y: 0
-      }} transition={{
-        duration: 1,
-        delay: 0.8
-      }} className="mt-10">
-          <Link to="/order">
-            <Button variant="outline" size="lg" className="px-16 py-4 text-sm tracking-[0.3em] uppercase border-cream/40 text-cream bg-transparent hover:bg-cream/10 hover:border-cream transition-all duration-500 rounded-none">
-              Order Online
-            </Button>
-          </Link>
         </motion.div>
 
         {/* CTA Section */}
