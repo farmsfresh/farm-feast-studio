@@ -44,7 +44,7 @@ export const ServicesPreview = () => {
           <h2 className="font-serif text-3xl md:text-4xl lg:text-5xl font-bold mb-3 text-primary-foreground">
             Our Services
           </h2>
-          <p className="max-w-2xl text-purple-50 md:mx-0 mx-auto font-light text-left text-3xl">From intimate gatherings to grand weddings to signature corporate events, we produce and deliver immersive events and culinary experiences customized for you needs.</p>
+          <p className="max-w-2xl text-purple-50 md:mx-0 mx-auto font-light text-left text-3xl">From intimate gatherings to grand weddings to signature corporate events,<br />we produce and deliver immersive events and culinary experiences customized for your needs.</p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
