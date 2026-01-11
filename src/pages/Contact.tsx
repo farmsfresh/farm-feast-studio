@@ -1,13 +1,14 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Send, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
-
+import { supabase } from "@/integrations/supabase/client";
 
 const contactInfo = [
   {
@@ -41,9 +42,42 @@ const contactInfo = [
 ];
 
 const Contact = () => {
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    message: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success("Message sent! We'll get back to you soon.");
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase.from("contact_submissions").insert({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || null,
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+      });
+
+      if (error) throw error;
+
+      toast.success("Message sent! We'll get back to you soon.");
+      setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
+    } catch (error) {
+      console.error("Error submitting contact form:", error);
+      toast.error("Failed to send message. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -128,20 +162,20 @@ const Contact = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                   <div>
                     <Label htmlFor="name" className="text-sm">Your Name *</Label>
-                    <Input id="name" placeholder="John Doe" className="mt-2" required />
+                    <Input id="name" placeholder="John Doe" className="mt-2" required value={formData.name} onChange={handleChange} />
                   </div>
                   <div>
                     <Label htmlFor="email" className="text-sm">Email Address *</Label>
-                    <Input id="email" type="email" placeholder="john@example.com" className="mt-2" required />
+                    <Input id="email" type="email" placeholder="john@example.com" className="mt-2" required value={formData.email} onChange={handleChange} />
                   </div>
                 </div>
                 <div>
                   <Label htmlFor="phone" className="text-sm">Phone Number</Label>
-                  <Input id="phone" type="tel" placeholder="(555) 123-4567" className="mt-2" />
+                  <Input id="phone" type="tel" placeholder="(555) 123-4567" className="mt-2" value={formData.phone} onChange={handleChange} />
                 </div>
                 <div>
                   <Label htmlFor="subject" className="text-sm">Subject *</Label>
-                  <Input id="subject" placeholder="How can we help you?" className="mt-2" required />
+                  <Input id="subject" placeholder="How can we help you?" className="mt-2" required value={formData.subject} onChange={handleChange} />
                 </div>
                 <div>
                   <Label htmlFor="message" className="text-sm">Message *</Label>
@@ -150,11 +184,13 @@ const Contact = () => {
                     placeholder="Tell us more about your inquiry..."
                     className="mt-2 min-h-24 md:min-h-32"
                     required
+                    value={formData.message}
+                    onChange={handleChange}
                   />
                 </div>
-                <Button variant="gold" size="lg" type="submit" className="w-full gap-2">
-                  <Send className="w-5 h-5" />
-                  Send Message
+                <Button variant="gold" size="lg" type="submit" className="w-full gap-2" disabled={isSubmitting}>
+                  {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                  {isSubmitting ? "Sending..." : "Send Message"}
                 </Button>
               </form>
             </motion.div>
