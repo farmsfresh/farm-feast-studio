@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { CalendarCheck, Users, ChefHat, BedDouble, Coffee, UtensilsCrossed, Sparkles, ArrowRight } from "lucide-react";
+import { CalendarCheck, ChefHat, BedDouble, Coffee, UtensilsCrossed, Sparkles } from "lucide-react";
 const services = [{
   icon: CalendarCheck,
   title: "Event Planning & Management",
