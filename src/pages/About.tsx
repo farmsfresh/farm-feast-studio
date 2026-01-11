@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { Layout } from "@/components/layout/Layout";
-import { Leaf, Award, Heart, Users, ShieldCheck, Utensils, Globe, Check } from "lucide-react";
+import { Award, Heart, Users, ShieldCheck, Utensils, Globe } from "lucide-react";
+import aboutOurStoryImage from "@/assets/about-our-story.jpg";
 import { Helmet } from "react-helmet-async";
 const values = [{
-  icon: Leaf,
+  icon: Heart,
   title: "Farm Fresh",
   description: "We source the freshest ingredients from local farms and trusted suppliers."
 }, {
@@ -97,10 +98,12 @@ const About = () => {
           }} transition={{
             duration: 0.6
           }} className="relative">
-              <div className="aspect-square rounded-2xl bg-gradient-to-br from-secondary to-muted overflow-hidden relative">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Leaf className="w-24 md:w-32 h-24 md:h-32 text-gold/20" />
-                </div>
+              <div className="aspect-square rounded-2xl overflow-hidden relative">
+                <img 
+                  src={aboutOurStoryImage} 
+                  alt="Fresh farm ingredients with olive oil, herbs and vegetables" 
+                  className="w-full h-full object-cover"
+                />
               </div>
               <div className="absolute -bottom-4 md:-bottom-6 -left-4 md:-left-6 w-24 md:w-32 h-24 md:h-32 bg-gold/10 rounded-2xl -z-10" />
               <div className="absolute -top-4 md:-top-6 -right-4 md:-right-6 w-20 md:w-24 h-20 md:h-24 bg-forest/10 rounded-2xl -z-10" />
