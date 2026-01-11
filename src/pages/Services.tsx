@@ -16,7 +16,7 @@ import { Helmet } from "react-helmet-async";
 
 // Import service images
 import serviceEventPlanning from "@/assets/service-event-planning.jpg";
-import serviceEventManagement from "@/assets/service-event-management.jpg";
+
 import serviceCulinary from "@/assets/service-culinary.jpg";
 import serviceBoxedMeals from "@/assets/service-boxed-meals.jpg";
 import serviceMicroKitchen from "@/assets/service-micro-kitchen.jpg";
