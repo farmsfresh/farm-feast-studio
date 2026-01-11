@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Phone, Mail, MapPin, Clock, Send } from "lucide-react";
 import { toast } from "sonner";
 import { Helmet } from "react-helmet-async";
-import logo from "@/assets/logo.png";
+
 
 const contactInfo = [
   {
@@ -63,15 +63,6 @@ const Contact = () => {
             transition={{ duration: 0.6 }}
             className="max-w-3xl mx-auto text-center"
           >
-            {/* Large Logo */}
-            <img 
-              src={logo} 
-              alt="Farms Fresh Food Catering" 
-              className="h-32 md:h-40 lg:h-48 w-auto mx-auto mb-6"
-            />
-            <span className="inline-block px-4 py-2 rounded-full bg-gold/20 text-gold text-sm font-medium tracking-wide mb-6">
-              Get In Touch
-            </span>
             <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-cream mb-6">
               Contact <span className="text-gold">Us</span>
             </h1>
