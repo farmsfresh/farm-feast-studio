@@ -26,17 +26,10 @@ import servicePopup from "@/assets/service-popup.jpg";
 const services = [
   {
     icon: CalendarCheck,
-    title: "Event Planning",
-    description: "Full-service event planning from concept to execution. Our team handles every detail to bring your vision to life.",
-    features: ["Venue selection assistance", "Theme development", "Vendor coordination", "Timeline management", "Budget optimization"],
+    title: "Event Planning & Management",
+    description: "Full-service event planning and professional on-site coordination from concept to flawless execution. Our team handles every detail to bring your vision to life.",
+    features: ["Venue selection assistance", "Theme development", "Vendor coordination", "Day-of coordination", "Staff management"],
     image: serviceEventPlanning,
-  },
-  {
-    icon: Users,
-    title: "Event Management",
-    description: "Professional on-site coordination ensuring flawless execution of your special occasions from start to finish.",
-    features: ["Day-of coordination", "Staff management", "Guest services", "Logistics handling", "Emergency planning"],
-    image: serviceEventManagement,
   },
   {
     icon: ChefHat,
