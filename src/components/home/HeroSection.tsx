@@ -106,6 +106,39 @@ export const HeroSection = () => {
             </Button>
           </Link>
         </motion.div>
+
+        {/* Metrics Section */}
+        <motion.div initial={{
+        opacity: 0,
+        y: 20
+      }} animate={{
+        opacity: 1,
+        y: 0
+      }} transition={{
+        duration: 1,
+        delay: 1.4
+      }} className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12">
+          {[{
+            value: "15+",
+            label: "Years Experience"
+          }, {
+            value: "50,000+",
+            label: "Happy Customers"
+          }, {
+            value: "2,500+",
+            label: "Events Catered"
+          }, {
+            value: "40+",
+            label: "Expert Chefs"
+          }].map((stat, index) => (
+            <div key={stat.label} className="text-center">
+              <div className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-gold mb-1">
+                {stat.value}
+              </div>
+              <div className="text-cream/70 text-xs md:text-sm tracking-wide">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>;
 };
