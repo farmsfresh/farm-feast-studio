@@ -84,8 +84,24 @@ const Quote = () => {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <Label htmlFor="eventType">Event Type *</Label>
+                    <Label htmlFor="service">Service Needed *</Label>
                     <Select required>
+                      <SelectTrigger className="mt-2">
+                        <SelectValue placeholder="Select service" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="event-planning">Event Planning & Management</SelectItem>
+                        <SelectItem value="culinary">On-site Culinary Management</SelectItem>
+                        <SelectItem value="boxed-meals">Boxed Meals</SelectItem>
+                        <SelectItem value="micro-kitchens">Micro Kitchens</SelectItem>
+                        <SelectItem value="catering">Catering</SelectItem>
+                        <SelectItem value="popup">Pop-up Catering</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="eventType">Event Type</Label>
+                    <Select>
                       <SelectTrigger className="mt-2">
                         <SelectValue placeholder="Select event type" />
                       </SelectTrigger>
@@ -96,23 +112,6 @@ const Quote = () => {
                         <SelectItem value="conference">Conference</SelectItem>
                         <SelectItem value="popup">Pop-up Event</SelectItem>
                         <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="service">Service Needed *</Label>
-                    <Select required>
-                      <SelectTrigger className="mt-2">
-                        <SelectValue placeholder="Select service" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="event-planning">Event Planning</SelectItem>
-                        <SelectItem value="event-management">Event Management</SelectItem>
-                        <SelectItem value="culinary">On-site Culinary Management</SelectItem>
-                        <SelectItem value="room-service">Room Service</SelectItem>
-                        <SelectItem value="micro-kitchens">Micro Kitchens</SelectItem>
-                        <SelectItem value="catering">Catering</SelectItem>
-                        <SelectItem value="popup">Pop-up Catering</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
