@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { Link } from "react-router-dom";
 import {
   Table,
@@ -88,8 +89,8 @@ const AdminModifiers = () => {
   const [modifiers, setModifiers] = useState<Modifier[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [itemModifiers, setItemModifiers] = useState<MenuItemModifier[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [dataLoading, setDataLoading] = useState(true);
+  const { isAdmin, loading: adminLoading } = useAdminAccess();
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
@@ -122,36 +123,18 @@ const AdminModifiers = () => {
   const [itemsDialogCategoryId, setItemsDialogCategoryId] = useState<string>("");
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
 
+  const loading = adminLoading || dataLoading;
+
   useEffect(() => {
-    checkAdminAccess();
-  }, []);
-
-  const checkAdminAccess = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      setIsAdmin(false);
-      setLoading(false);
-      return;
-    }
-
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin");
-
-    if (roles && roles.length > 0) {
-      setIsAdmin(true);
+    if (isAdmin === true) {
       fetchData();
-    } else {
-      setIsAdmin(false);
-      setLoading(false);
+    } else if (isAdmin === false) {
+      setDataLoading(false);
     }
-  };
+  }, [isAdmin]);
 
   const fetchData = async () => {
-    setLoading(true);
+    setDataLoading(true);
     const [categoriesRes, modifiersRes, menuItemsRes, itemModifiersRes] = await Promise.all([
       supabase.from("modifier_categories").select("*").order("display_order"),
       supabase.from("modifiers").select("*").order("display_order"),
@@ -188,7 +171,7 @@ const AdminModifiers = () => {
       setItemModifiers(itemModifiersRes.data || []);
     }
 
-    setLoading(false);
+    setDataLoading(false);
   };
 
   const toggleCategory = (categoryId: string) => {

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { Link } from "react-router-dom";
 import {
   Table,
@@ -69,42 +70,24 @@ const statusOptions = [
 
 const Admin = () => {
   const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const { isAdmin, loading: adminLoading } = useAdminAccess();
   const { toast } = useToast();
 
   useEffect(() => {
-    checkAdminAccess();
-  }, []);
-
-  const checkAdminAccess = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      setIsAdmin(false);
-      setLoading(false);
-      return;
-    }
-
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin");
-
-    if (roles && roles.length > 0) {
-      setIsAdmin(true);
+    if (isAdmin === true) {
       fetchOrders();
-    } else {
-      setIsAdmin(false);
-      setLoading(false);
+    } else if (isAdmin === false) {
+      setDataLoading(false);
     }
-  };
+  }, [isAdmin]);
+
+  const loading = adminLoading || dataLoading;
 
   const fetchOrders = async () => {
-    setLoading(true);
+    setDataLoading(true);
     const { data, error } = await supabase
       .from("orders")
       .select("*")
@@ -125,7 +108,7 @@ const Admin = () => {
       }));
       setOrders(typedOrders);
     }
-    setLoading(false);
+    setDataLoading(false);
   };
 
   const updateOrderStatus = async (orderId: string, newStatus: string) => {
