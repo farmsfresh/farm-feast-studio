@@ -8,22 +8,10 @@ export const useAdminAccess = () => {
   useEffect(() => {
     let mounted = true;
 
-    const checkAdminAccess = async () => {
+    const checkAdminAccess = async (userId: string) => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        
-        if (!session?.user) {
-          if (mounted) {
-            setIsAdmin(false);
-            setLoading(false);
-          }
-          return;
-        }
-
-        // Use the has_role database function which is a security definer
-        // This bypasses RLS and provides reliable admin checks
         const { data, error } = await supabase.rpc('has_role', {
-          _user_id: session.user.id,
+          _user_id: userId,
           _role: 'admin'
         });
 
@@ -45,26 +33,18 @@ export const useAdminAccess = () => {
       }
     };
 
-    checkAdminAccess();
-
-    // Listen for auth state changes
+    // Listen for auth state changes - this handles INITIAL_SESSION on page load
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
-        if (event === 'SIGNED_IN' && session?.user) {
-          // Re-check admin status when user signs in
-          const { data } = await supabase.rpc('has_role', {
-            _user_id: session.user.id,
-            _role: 'admin'
-          });
-          if (mounted) {
-            setIsAdmin(data === true);
-            setLoading(false);
-          }
-        } else if (event === 'SIGNED_OUT') {
-          if (mounted) {
-            setIsAdmin(false);
-            setLoading(false);
-          }
+        if (!mounted) return;
+
+        if (session?.user) {
+          // User is authenticated - check admin status
+          await checkAdminAccess(session.user.id);
+        } else {
+          // No session - not an admin
+          setIsAdmin(false);
+          setLoading(false);
         }
       }
     );
