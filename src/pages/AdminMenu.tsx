@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { Link } from "react-router-dom";
 import {
   Table,
@@ -321,10 +322,10 @@ function SortableMenuItemRow({
 const AdminMenu = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const { isAdmin, loading: adminLoading } = useAdminAccess();
   const { toast } = useToast();
 
   // Dialog states
@@ -358,36 +359,18 @@ const AdminMenu = () => {
     display_order: 0,
   });
 
+  const loading = adminLoading || dataLoading;
+
   useEffect(() => {
-    checkAdminAccess();
-  }, []);
-
-  const checkAdminAccess = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      setIsAdmin(false);
-      setLoading(false);
-      return;
-    }
-
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin");
-
-    if (roles && roles.length > 0) {
-      setIsAdmin(true);
+    if (isAdmin === true) {
       fetchData();
-    } else {
-      setIsAdmin(false);
-      setLoading(false);
+    } else if (isAdmin === false) {
+      setDataLoading(false);
     }
-  };
+  }, [isAdmin]);
 
   const fetchData = async () => {
-    setLoading(true);
+    setDataLoading(true);
     
     const [categoriesRes, itemsRes] = await Promise.all([
       supabase.from("menu_categories").select("*").order("display_order"),
@@ -406,7 +389,7 @@ const AdminMenu = () => {
       setMenuItems(itemsRes.data || []);
     }
 
-    setLoading(false);
+    setDataLoading(false);
   };
 
   // Item CRUD

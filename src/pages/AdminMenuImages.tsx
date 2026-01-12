@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
 import { Link } from "react-router-dom";
 import {
   Table,
@@ -67,8 +68,8 @@ interface UploadedImage {
 const AdminMenuImages = () => {
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [dataLoading, setDataLoading] = useState(true);
+  const { isAdmin, loading: adminLoading } = useAdminAccess();
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
@@ -81,36 +82,18 @@ const AdminMenuImages = () => {
   const bulkFileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
+  const loading = adminLoading || dataLoading;
+
   useEffect(() => {
-    checkAdminAccess();
-  }, []);
-
-  const checkAdminAccess = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      setIsAdmin(false);
-      setLoading(false);
-      return;
-    }
-
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin");
-
-    if (roles && roles.length > 0) {
-      setIsAdmin(true);
+    if (isAdmin === true) {
       fetchData();
-    } else {
-      setIsAdmin(false);
-      setLoading(false);
+    } else if (isAdmin === false) {
+      setDataLoading(false);
     }
-  };
+  }, [isAdmin]);
 
   const fetchData = async () => {
-    setLoading(true);
+    setDataLoading(true);
     
     const [itemsRes, categoriesRes] = await Promise.all([
       supabase.from("menu_items").select("id, name, category_id, image_url, price").order("name"),
@@ -120,7 +103,7 @@ const AdminMenuImages = () => {
     if (itemsRes.data) setMenuItems(itemsRes.data);
     if (categoriesRes.data) setCategories(categoriesRes.data);
     
-    setLoading(false);
+    setDataLoading(false);
   };
 
   const getCategoryName = (categoryId: string) => {

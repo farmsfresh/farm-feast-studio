@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useAdminAccess } from "@/hooks/useAdminAccess";
 import {
   Table,
   TableBody,
@@ -43,41 +44,23 @@ interface VisitorLog {
 
 const AdminVisitors = () => {
   const [visitors, setVisitors] = useState<VisitorLog[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const { isAdmin, loading: adminLoading } = useAdminAccess();
   const { toast } = useToast();
 
+  const loading = adminLoading || dataLoading;
+
   useEffect(() => {
-    checkAdminAccess();
-  }, []);
-
-  const checkAdminAccess = async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    
-    if (!user) {
-      setIsAdmin(false);
-      setLoading(false);
-      return;
-    }
-
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin");
-
-    if (roles && roles.length > 0) {
-      setIsAdmin(true);
+    if (isAdmin === true) {
       fetchVisitors();
-    } else {
-      setIsAdmin(false);
-      setLoading(false);
+    } else if (isAdmin === false) {
+      setDataLoading(false);
     }
-  };
+  }, [isAdmin]);
 
   const fetchVisitors = async () => {
-    setLoading(true);
+    setDataLoading(true);
     const { data, error } = await supabase
       .from("visitor_logs")
       .select("*")
@@ -94,7 +77,7 @@ const AdminVisitors = () => {
     } else {
       setVisitors(data || []);
     }
-    setLoading(false);
+    setDataLoading(false);
   };
 
   const filteredVisitors = visitors.filter((visitor) => {
