@@ -6,11 +6,14 @@ export const useAdminAccess = () => {
   const [loading, setLoading] = useState(true);
 
   const checkAdminAccess = useCallback(async (userId: string) => {
+    console.log("[useAdminAccess] Checking admin access for userId:", userId);
     try {
       const { data, error } = await supabase.rpc('has_role', {
         _user_id: userId,
         _role: 'admin'
       });
+
+      console.log("[useAdminAccess] has_role result:", { data, error });
 
       if (error) {
         console.error("Error checking admin role:", error);
@@ -28,17 +31,22 @@ export const useAdminAccess = () => {
 
     // Initial session check - runs immediately on mount
     const initializeAuth = async () => {
+      console.log("[useAdminAccess] Initializing auth check...");
       const { data: { session } } = await supabase.auth.getSession();
+      
+      console.log("[useAdminAccess] Session:", session ? { userId: session.user.id, email: session.user.email } : null);
       
       if (!mounted) return;
       
       if (session?.user) {
         const adminStatus = await checkAdminAccess(session.user.id);
+        console.log("[useAdminAccess] Admin status:", adminStatus);
         if (mounted) {
           setIsAdmin(adminStatus);
           setLoading(false);
         }
       } else {
+        console.log("[useAdminAccess] No session found, setting isAdmin to false");
         setIsAdmin(false);
         setLoading(false);
       }
