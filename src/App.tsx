@@ -19,6 +19,7 @@ import Admin from "./pages/Admin";
 import AdminVisitors from "./pages/AdminVisitors";
 import AdminModifiers from "./pages/AdminModifiers";
 import AdminMenuImages from "./pages/AdminMenuImages";
+import DownloadMenu from "./pages/DownloadMenu";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
             <Route path="/admin/modifiers" element={<AdminModifiers />} />
             <Route path="/admin/menu-images" element={<AdminMenuImages />} />
             <Route path="/admin/menu" element={<AdminMenu />} />
+            <Route path="/download-menu" element={<DownloadMenu />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
