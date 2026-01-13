@@ -29,51 +29,53 @@ export const useAdminAccess = () => {
   useEffect(() => {
     let mounted = true;
 
-    // Initial session check - runs immediately on mount
-    const initializeAuth = async () => {
-      console.log("[useAdminAccess] Initializing auth check...");
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      console.log("[useAdminAccess] Session:", session ? { userId: session.user.id, email: session.user.email } : null);
-      
-      if (!mounted) return;
-      
-      if (session?.user) {
-        const adminStatus = await checkAdminAccess(session.user.id);
-        console.log("[useAdminAccess] Admin status:", adminStatus);
-        if (mounted) {
-          setIsAdmin(adminStatus);
-          setLoading(false);
-        }
-      } else {
-        console.log("[useAdminAccess] No session found, setting isAdmin to false");
-        setIsAdmin(false);
-        setLoading(false);
-      }
-    };
-
-    initializeAuth();
-
-    // Listen for auth state changes
+    // Set up auth state listener FIRST - this handles INITIAL_SESSION too
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
+        console.log("[useAdminAccess] Auth state changed:", event, session?.user?.email);
+        
         if (!mounted) return;
 
-        // Skip INITIAL_SESSION as we handle it above
-        if (event === 'INITIAL_SESSION') return;
-
         if (session?.user) {
-          const adminStatus = await checkAdminAccess(session.user.id);
-          if (mounted) {
-            setIsAdmin(adminStatus);
-            setLoading(false);
-          }
+          // Defer Supabase calls with setTimeout to prevent deadlock
+          setTimeout(async () => {
+            if (!mounted) return;
+            const adminStatus = await checkAdminAccess(session.user.id);
+            console.log("[useAdminAccess] Admin status:", adminStatus);
+            if (mounted) {
+              setIsAdmin(adminStatus);
+              setLoading(false);
+            }
+          }, 0);
         } else {
+          console.log("[useAdminAccess] No session, setting isAdmin to false");
           setIsAdmin(false);
           setLoading(false);
         }
       }
     );
+
+    // THEN check for existing session (as a fallback)
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("[useAdminAccess] getSession result:", session?.user?.email || null);
+      
+      // Only process if we haven't already handled via onAuthStateChange
+      if (!mounted) return;
+      
+      if (session?.user) {
+        setTimeout(async () => {
+          if (!mounted) return;
+          const adminStatus = await checkAdminAccess(session.user.id);
+          if (mounted) {
+            setIsAdmin(adminStatus);
+            setLoading(false);
+          }
+        }, 0);
+      } else {
+        setIsAdmin(false);
+        setLoading(false);
+      }
+    });
 
     return () => {
       mounted = false;
